@@ -4,11 +4,13 @@
 void checkSetupButton()
 {
   //Check setup button and configure module accordingly
-  if (digitalRead(setupButton) == LOW || digitalRead(powerSenseAndControl) == LOW)
+  if (digitalRead(setupButton) == LOW || setupByPowerButton == true)
   {
     delay(20); //Debounce
-    if (digitalRead(setupButton) == LOW || digitalRead(powerSenseAndControl) == LOW)
+    if (digitalRead(setupButton) == LOW || setupByPowerButton == true)
     {
+      setupByPowerButton = false;
+      
       if (systemState == STATE_ROVER_NO_FIX ||
           systemState == STATE_ROVER_FIX ||
           systemState == STATE_ROVER_RTK_FLOAT ||
@@ -115,7 +117,6 @@ void checkPowerButton()
     delay(debounceDelay);
     if (digitalRead(powerSenseAndControl) == LOW)
     {
-      Serial.println("User is pressing power button. Start timer.");
       powerPressedStartTime = millis();
     }
   }
@@ -127,7 +128,6 @@ void checkPowerButton()
     {
       if ((millis() - powerPressedStartTime) > 2000)
       {
-        Serial.println("Time to power down!");
         powerDown(true);
       }
     }
@@ -140,8 +140,10 @@ void checkPowerButton()
     {
       Serial.print("Power button released after ms: ");
       Serial.println(millis() - powerPressedStartTime);
+      powerPressedStartTime = 0; //Reset var to return to normal 'on' state
+
+      setupByPowerButton = true; //Notify checkSetupButton() 
     }
-    powerPressedStartTime = 0; //Reset var to return to normal 'on' state
   }
 }
 

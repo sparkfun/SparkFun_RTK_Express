@@ -209,6 +209,8 @@ uint32_t casterResponseWaitStartTime = 0; //Used to detect if caster service tim
 
 uint32_t maxSurveyInWait_s = 60L * 15L; //Re-start survey-in after X seconds
 
+bool setupByPowerButton = false; //We can change setup via tapping power button
+
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 void setup()
@@ -229,6 +231,8 @@ void setup()
 
   //Start EEPROM and SD for settings, and display for output
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  beginDisplay(); //Check if an external Qwiic OLED is attached
+
   beginEEPROM();
 
   //eepromErase();
@@ -241,8 +245,6 @@ void setup()
   }
 
   loadSettings(); //Attempt to load settings after SD is started so we can read the settings file if available
-
-  beginDisplay(); //Check if an external Qwiic OLED is attached
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   beginFuelGauge(); //Configure battery fuel guage monitor
