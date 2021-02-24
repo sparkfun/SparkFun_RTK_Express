@@ -5,7 +5,7 @@ void menuMain()
   while (1)
   {
     Serial.println();
-    Serial.printf("SparkFun RTK Surveyor v%d.%d\r\n", FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR);
+    Serial.printf("SparkFun RTK Express v%d.%d\r\n", FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR);
 
     Serial.print(F("** Bluetooth broadcasting as: "));
     Serial.print(deviceName);
@@ -53,7 +53,7 @@ void menuMain()
 
         myGNSS.factoryReset(); //Reset everything: baud rate, I2C address, update rate, everything.
 
-        Serial.println(F("Settings erased. Please reset RTK Surveyor. Freezing."));
+        Serial.println(F("Settings erased. Please reset RTK Express. Freezing."));
         while (1) 
           delay(1); //Prevent CPU freakout
       }
@@ -74,5 +74,18 @@ void menuMain()
 
   recordSystemSettings(); //Once all menus have exited, record the new settings to EEPROM and config file
 
+  //Create files or close files as needed
+  if (settings.zedOutputLogging == true && online.dataLogging == false)
+  {
+    beginDataLogging();
+  }
+  else if (settings.zedOutputLogging == false && online.dataLogging == true)
+  {
+    //Close down file
+    gnssDataFile.sync();
+    gnssDataFile.close();
+    online.dataLogging = false;
+  }
+  
   while (Serial.available()) Serial.read(); //Empty buffer of any newline chars
 }

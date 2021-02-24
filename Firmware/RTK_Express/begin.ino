@@ -73,7 +73,7 @@ void beginGNSS()
   //    {
   //      Serial.print(F("The ZED-F9P appears to have outdated firmware. Found: "));
   //      Serial.println(myGNSS.minfo.extension[1]);
-  //      Serial.print(F("The Surveyor works best with "));
+  //      Serial.print(F("The Express works best with "));
   //      Serial.println(latestZEDFirmware);
   //      Serial.print(F("Please upgrade using u-center."));
   //      Serial.println();

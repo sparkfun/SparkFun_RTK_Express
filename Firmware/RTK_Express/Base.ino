@@ -18,11 +18,11 @@ bool configureUbloxModuleBase()
       Serial.println(F("setDynamicModel failed!"));
   }
 
-  //In base mode the Surveyor should output RTCM over UART2 and I2C ports:
-  //(Primary) UART2 in case the Surveyor is connected via radio to rover
+  //In base mode the Express should output RTCM over UART2 and I2C ports:
+  //(Primary) UART2 in case the Express is connected via radio to rover
   //(Optional) I2C in case user wants base to connect to WiFi and NTRIP Serve to Caster
-  //(Seconday) USB in case the Surveyor is used as an NTRIP caster
-  //(Tertiary) UART1 in case Surveyor is sending RTCM to phone that is then NTRIP caster
+  //(Seconday) USB in case the Express is used as an NTRIP caster
+  //(Tertiary) UART1 in case Express is sending RTCM to phone that is then NTRIP caster
   response &= enableRTCMSentences(COM_PORT_UART2);
   response &= enableRTCMSentences(COM_PORT_UART1);
   response &= enableRTCMSentences(COM_PORT_USB);

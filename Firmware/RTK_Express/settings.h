@@ -45,7 +45,7 @@ enum returnStatus {
   STATUS_PRESSED_X,
 };
 
-//This is all the settings that can be set on RTK Surveyor. It's recorded to NVM and the config file.
+//This is all the settings that can be set on RTK Express. It's recorded to NVM and the config file.
 struct struct_settings {
   int sizeOfSettings = 0; //sizeOfSettings **must** be the first entry and must be int
   int rtkIdentifier = RTK_IDENTIFIER; // rtkIdentifier **must** be the second entry
@@ -84,7 +84,7 @@ struct struct_settings {
   char wifiPW[50] = "parachutes";  
 } settings;
 
-//These are the devices on board RTK Surveyor that may be on or offline.
+//These are the devices on board RTK Express that may be on or offline.
 struct struct_online {
   bool microSD = false;
   bool display = false;

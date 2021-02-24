@@ -28,7 +28,7 @@ void loadSettings()
   EEPROM.get(sizeof(int), tempIdentifier); //Load the identifier from the EEPROM location after sizeOfSettings (int)
   if (tempIdentifier != RTK_IDENTIFIER)
   {
-    Serial.println(F("Settings are not valid for this variant of RTK Surveyor. Default settings applied"));
+    Serial.println(F("Settings are not valid for this variant of RTK Express. Default settings applied"));
     recordSystemSettings(); //Record default settings to EEPROM and config file. At power on, settings are in default state
   }
 
@@ -221,17 +221,17 @@ bool parseLine(char* str) {
   if (strcmp(settingName, "sizeOfSettings") == 0)
   {
     //We may want to cause a factory reset from the settings file rather than the menu
-    //If user sets sizeOfSettings to -1 in config file, RTK Surveyor will factory reset
+    //If user sets sizeOfSettings to -1 in config file, RTK Express will factory reset
     if (d == -1)
     {
       eepromErase();
       sd.remove(settingsFileName);
-      Serial.println(F("RTK Surveyor has been factory reset. Freezing. Please restart and open terminal at 115200bps."));
+      Serial.println(F("RTK Express has been factory reset. Freezing. Please restart and open terminal at 115200bps."));
       while (1)
         delay(1); //Prevent CPU freakout
     }
 
-    //Check to see if this setting file is compatible with this version of RTK Surveyor
+    //Check to see if this setting file is compatible with this version of RTK Express
     if (d != sizeof(settings))
       Serial.printf("Warning: Settings size is %d but current firmware expects %d. Attempting to use settings from file.\r\n", d, sizeof(settings));
 

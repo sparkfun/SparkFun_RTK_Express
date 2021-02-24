@@ -83,7 +83,7 @@ void menuLog()
 }
 
 //Creates a log if logging is enabled, and SD is detected
-//Based on GPS data/time, create a log file in the format SFE_Surveyor_YYMMDD_HHMMSS.txt
+//Based on GPS data/time, create a log file in the format SFE_Express_YYMMDD_HHMMSS.txt
 void beginDataLogging()
 {
   if (online.dataLogging == false)
@@ -95,10 +95,10 @@ void beginDataLogging()
       //If we don't have a file yet, create one
       if (strlen(gnssDataFileName) == 0)
       {
-        //Based on GPS data/time, create a log file in the format SFE_Surveyor_YYMMDD_HHMMSS.txt
+        //Based on GPS data/time, create a log file in the format SFE_Express_YYMMDD_HHMMSS.txt
         if (myGNSS.getTimeValid() == true && myGNSS.getDateValid() == true)
         {
-          sprintf(gnssDataFileName, "SFE_Surveyor_%02d%02d%02d_%02d%02d%02d.txt",
+          sprintf(gnssDataFileName, "SFE_Express_%02d%02d%02d_%02d%02d%02d.txt",
                   myGNSS.getYear() - 2000, myGNSS.getMonth(), myGNSS.getDay(),
                   myGNSS.getHour(), myGNSS.getMinute(), myGNSS.getSecond()
                  );

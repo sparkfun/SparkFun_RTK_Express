@@ -3,7 +3,7 @@
   SparkFun Electronics
   Nathan Seidle
 
-  This firmware runs the core of the SparkFun RTK Surveyor product. It runs on an ESP32
+  This firmware runs the core of the SparkFun RTK Express product. It runs on an ESP32
   and communicates with the ZED-F9P.
 
   Select the ESP32 Dev Module from the boards list. This maps the same pins to the ESP32-WROOM module.
@@ -11,7 +11,7 @@
 
   Special thanks to Avinab Malla for guidance on getting xTasks implemented.
 
-  The RTK Surveyor implements classic Bluetooth SPP to transfer data from the
+  The RTK Express implements classic Bluetooth SPP to transfer data from the
   ZED-F9P to the phone and receive any RTCM from the phone and feed it back
   to the ZED-F9P to achieve RTK: F9PSerialWriteTask(), F9PSerialReadTask().
 
@@ -34,22 +34,19 @@
 
   Allow user to set horz acc required before start of survey in. Default to 1m
   Check if any globals are not used
-  Test rover/base swap using power button
   Make sure all states have a clean enter/exit method. Ex: if WiFi goes out, attempt reconnect
   How should we prevent state change lock. For example, if caster responds with bad news, how do we prevent constant pinging between STATE_BASE_TEMP_WIFI_CONNECTED and STATE_BASE_TEMP_CASTER_STARTED?
-  Search replace for Surveyor
   Fix really slow update of screen during survey in
-  
-  
+  Add 'Terminal Config' splash when serial configuring
 
 */
 
 const int FIRMWARE_VERSION_MAJOR = 1;
 const int FIRMWARE_VERSION_MINOR = 0;
 
-//Define the RTK Surveyor board identifier:
-//  This is an int which is unique to this variant of the RTK Surveyor and which allows us
-//  to make sure that the settings in EEPROM are correct for this version of the RTK Surveyor
+//Define the RTK Express board identifier:
+//  This is an int which is unique to this variant of the RTK Express and which allows us
+//  to make sure that the settings in EEPROM are correct for this version of the RTK Express
 //  (sizeOfSettings is not necessarily unique and we want to avoid problems when swapping from one variant to another)
 //  It is the sum of:
 //    the major firmware version * 0x10
@@ -81,7 +78,7 @@ const int powerFastOff = 27;
 SdFat sd;
 SdFile gnssDataFile; //File that all gnss data is written to
 
-char settingsFileName[40] = "SFE_Surveyor_Settings.txt"; //File to read/write system settings to
+char settingsFileName[40] = "SFE_Express_Settings.txt"; //File to read/write system settings to
 
 unsigned long lastDataLogSyncTime = 0; //Used to record to SD every half second
 long startLogTime_minutes = 0; //Mark when we start logging so we can stop logging after maxLogTime_minutes
@@ -180,13 +177,13 @@ MicroOLED oled(PIN_RESET, DC_JUMPER);
 #include <Update.h>
 int binCount = 0;
 char binFileNames[10][50];
-const char* forceFirmwareFileName = "RTK_Surveyor_Firmware_Force.bin"; //File that will be loaded at startup regardless of user input
+const char* forceFirmwareFileName = "RTK_Express_Firmware_Force.bin"; //File that will be loaded at startup regardless of user input
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 //Global variables
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 uint8_t unitMACAddress[6]; //Use MAC address in BT broadcast and display
-char deviceName[20]; //The serial string that is broadcast. Ex: 'Surveyor Base-BC61'
+char deviceName[20]; //The serial string that is broadcast. Ex: 'Express Base-BC61'
 const byte menuTimeout = 15; //Menus will exit/timeout after this number of seconds
 bool inTestMode = false; //Used to re-route BT traffic while in test sub menu
 long systemTime_minutes = 0; //Used to test if logging is less than max minutes
@@ -283,21 +280,7 @@ void loop()
 
   updateDisplay();
 
-  //Menu system via ESP32 USB connection
-  if (Serial.available()) menuMain(); //Present user menu
-
-  //Create files or close files as needed
-  if (settings.zedOutputLogging == true && online.dataLogging == false)
-  {
-    beginDataLogging();
-  }
-  else if (settings.zedOutputLogging == false && online.dataLogging == true)
-  {
-    //Close down file
-    gnssDataFile.sync();
-    gnssDataFile.close();
-    online.dataLogging = false;
-  }
+  if (Serial.available()) menuMain(); //Present user menu via USB serial connection
 
   //Convert current system time to minutes. This is used in F9PSerialReadTask() to see if we are within max log window.
   systemTime_minutes = millis() / 1000L / 60;
