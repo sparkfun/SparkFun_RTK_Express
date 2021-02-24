@@ -1,6 +1,9 @@
 /*
    Used as designer for main display.
 */
+const int FIRMWARE_VERSION_MAJOR = 1;
+const int FIRMWARE_VERSION_MINOR = 0;
+
 #include "settings.h"
 
 #include <Wire.h>
@@ -65,8 +68,17 @@ MicroOLED oled(PIN_RESET, DC_JUMPER);
 uint8_t unitMACAddress[6]; //Use MAC address in BT broadcast and display
 
 uint32_t lastDisplayUpdate = 0;
+uint32_t lastSystemStateUpdate = 0;
+
 uint32_t lastSatelliteDishIconUpdate = 0;
 bool satelliteDishIconDisplayed = false; //Toggles as lastSatelliteDishIconUpdate goes above 1000ms
+uint32_t lastCrosshairIconUpdate = 0;
+bool crosshairIconDisplayed = false; //Toggles as lastCrosshairIconUpdate goes above 1000ms
+uint32_t lastBaseIconUpdate = 0;
+bool baseIconDisplayed = false; //Toggles as lastSatelliteDishIconUpdate goes above 1000ms
+uint32_t lastRTCMPacketSent = 0; //Used to count RTCM packets sent during base mode
+uint32_t rtcmPacketsSent = 0; //Used to count RTCM packets sent during base mode
+
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 void setup()
@@ -76,7 +88,7 @@ void setup()
   Serial.println("OLED example");
 
   Wire.begin();
-  Wire.setClock(400000);
+  //Wire.setClock(400000);
 
   //Get unit MAC address
   esp_read_mac(unitMACAddress, ESP_MAC_WIFI_STA);
@@ -107,126 +119,61 @@ void setup()
 
   //radioState = BT_CONNECTED; //Uncomment to display BT icon
   //baseState = BASE_SURVEYING_IN_SLOW;
+
+  //Change screens
+  currentScreen = SCREEN_ROVER_RTCM;
+  //currentScreen = SCREEN_BASE_SURVEYING_NOTSTARTED;
+  //currentScreen = SCREEN_BASE_SURVEYING_STARTED;
+  //currentScreen = SCREEN_BASE_TRANSMITTING;
+  //currentScreen = SCREEN_BASE_FAILED;
+
 }
 
 void loop()
 {
   myGNSS.checkUblox(); //Regularly poll to get latest data and any RTCM
 
+  updateSystemState();
+
   updateDisplay();
+
+  //TODO - add button check here to start survey
 
   //Serial.print(".");
 
   delay(10);
 }
 
-void updateDisplay()
+//Given the current state, see if conditions have moved us to a new state
+void updateSystemState()
 {
-  //Update the display if connected
-  if (online.display == true)
+  if (millis() - lastSystemStateUpdate > 500)
   {
-    if (millis() - lastDisplayUpdate > 500) //Update display at 2Hz
+    lastSystemStateUpdate = millis();
+
+    //Check if user wants to switch between rover/base
+    if (setupButtonRecorded == false)
     {
-      lastDisplayUpdate = millis();
+      setupButtonRecorded = true;
 
-      oled.clear(PAGE); // Clear the display's internal buffer
+      //TODO check for fixed base user setting
+      systemState = STATE_BASE_TEMP_SURVEY_NOT_STARTED;
+    }
 
-      //Current battery charge level
-      if (battLevel < 25)
-        oled.drawIcon(45, 0, Battery_0_Width, Battery_0_Height, Battery_0, sizeof(Battery_0), true);
-      else if (battLevel < 50)
-        oled.drawIcon(45, 0, Battery_1_Width, Battery_1_Height, Battery_1, sizeof(Battery_1), true);
-      else if (battLevel < 75)
-        oled.drawIcon(45, 0, Battery_2_Width, Battery_2_Height, Battery_2, sizeof(Battery_2), true);
-      else //batt level > 75
-        oled.drawIcon(45, 0, Battery_3_Width, Battery_3_Height, Battery_3, sizeof(Battery_3), true);
-
-      //Bluetooth Address or RSSI
-      if (radioState == BT_CONNECTED)
-      {
-        oled.drawIcon(4, 0, BT_Symbol_Width, BT_Symbol_Height, BT_Symbol, sizeof(BT_Symbol), true);
-      }
-      else
-      {
-        char macAddress[5];
-        sprintf(macAddress, "%02X%02X", unitMACAddress[4], unitMACAddress[5]);
-        oled.setFontType(0); //Set font to smallest
-        oled.setCursor(0, 4);
-        oled.print(macAddress);
-      }
-
-      if (baseState == BASE_OFF)
-        oled.drawIcon(27, 3, Rover_Width, Rover_Height, Rover, sizeof(Rover), true);
-      else if (baseState == BASE_SURVEYING_IN_NOTSTARTED ||
-               baseState == BASE_SURVEYING_IN_SLOW ||
-               baseState == BASE_SURVEYING_IN_FAST ||
-               baseState == BASE_TRANSMITTING)
-        oled.drawIcon(27, 0, Base_Width, Base_Height, Base, sizeof(Base), true); //true - blend with other pixels
-
-      //Horz positional accuracy
-      oled.drawIcon(0, 18, CrossHair_Width, CrossHair_Height, CrossHair, sizeof(CrossHair), true);
-      oled.setFontType(1); //Set font to type 1: 8x16
-      oled.setCursor(16, 20); //x, y
-      oled.print(":");
-      float hpa = myGNSS.getHorizontalAccuracy() / 10000.0;
-      if (hpa > 30.0)
-      {
-        oled.print(F(">30m"));
-      }
-      else if (hpa > 9.9)
-      {
-        oled.print(hpa, 1); //Print down to decimeter
-      }
-      else if (hpa > 1.0)
-      {
-        oled.print(hpa, 2); //Print down to centimeter
-      }
-      else
-      {
-        oled.print("."); //Remove leading zero
-        oled.printf("%03d", (int)(hpa * 1000)); //Print down to millimeter
-      }
-
-      //SIV
-
-      //Blink satellite dish icon if we don't have a fix
-      if (myGNSS.getFixType() == 3)
-      {
-        //3D fix, turn on icon
-        oled.drawIcon(2, 35, Antenna_Width, Antenna_Height, Antenna, sizeof(Antenna), true);
-      }
-      else
-      {
-        if (millis() - lastSatelliteDishIconUpdate > 500)
+    switch (systemState)
+    {
+      case (STATE_ROVER_NO_FIX):
         {
-          Serial.println("Blink");
-          lastSatelliteDishIconUpdate = millis();
-          if (satelliteDishIconDisplayed == false)
-          {
-            satelliteDishIconDisplayed = true;
-
-            //Draw the icon
-            oled.drawIcon(2, 35, Antenna_Width, Antenna_Height, Antenna, sizeof(Antenna), true);
-          }
-          else
-            satelliteDishIconDisplayed = false;
+          if (myGNSS.getFixType() == 3) //3D
+            systemState = STATE_ROVER_FIX;
         }
-      }
-
-
-      oled.setCursor(16, 36); //x, y
-      oled.print(":");
-
-      if (myGNSS.getFixType() == 0) //0 = No Fix
-      {
-        oled.print("0");
-      }
-      else
-      {
-        oled.print(myGNSS.getSIV());
-      }
-
-      oled.display(); //Push internal buffer to display
+        break;
+      case (STATE_ROVER_FIX):
+        {
+          if (myGNSS.getCarrierSolutionType() == 1) //RTK Float
+            systemState = STATE_ROVER_RTK_FLOAT;
+        }
+        break;
     }
   }
 }

@@ -1,165 +1,136 @@
 /*
-   MicroOLED_Clock.ino
-
-   Distributed as-is; no warranty is given.
+   Used as designer for main display.
 */
+#include "settings.h"
+
 #include <Wire.h>
+
+//GNSS configuration
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#define MAX_PAYLOAD_SIZE 384 // Override MAX_PAYLOAD_SIZE for getModuleInfo which can return up to 348 bytes
+
+#include <SparkFun_u-blox_GNSS_Arduino_Library.h> //http://librarymanager/All#SparkFun_u-blox_GNSS
+//SFE_UBLOX_GNSS myGNSS;
+
+// Extend the class for getModuleInfo - See Example21_ModuleInfo
+class SFE_UBLOX_GNSS_ADD : public SFE_UBLOX_GNSS
+{
+  public:
+    boolean getModuleInfo(uint16_t maxWait = 1100); //Queries module, texts
+
+    struct minfoStructure // Structure to hold the module info (uses 341 bytes of RAM)
+    {
+      char swVersion[30];
+      char hwVersion[10];
+      uint8_t extensionNo = 0;
+      char extension[10][30];
+    } minfo;
+};
+
+SFE_UBLOX_GNSS_ADD myGNSS;
+
+//This string is used to verify the firmware on the ZED-F9P. This
+//firmware relies on various features of the ZED and may require the latest
+//u-blox firmware to work correctly. We check the module firmware at startup but
+//don't prevent operation if firmware is mismatched.
+char latestZEDFirmware[] = "FWVER=HPG 1.13";
+
+//Used for config ZED for things not supported in library: getPortSettings, getSerialRate, getNMEASettings, getRTCMSettings
+//This array holds the payload data bytes. Global so that we can use between config functions.
+uint8_t settingPayload[MAX_PAYLOAD_SIZE];
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+//Battery fuel gauge and PWM LEDs
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#include <SparkFun_MAX1704x_Fuel_Gauge_Arduino_Library.h> // Click here to get the library: http://librarymanager/All#SparkFun_MAX1704x_Fuel_Gauge_Arduino_Library
+SFE_MAX1704X lipo(MAX1704X_MAX17048);
+
+int battLevel = 0; //SOC measured from fuel gauge, in %. Used in multiple places (display, serial debug, log)
+float battVoltage = 0.0;
+float battChangeRate = 0.0;
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+//External Display
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #include <SFE_MicroOLED.h> //Click here to get the library: http://librarymanager/All#SparkFun_Micro_OLED
 #include "icons.h"
 
 #define PIN_RESET 9
 #define DC_JUMPER 1
 MicroOLED oled(PIN_RESET, DC_JUMPER);
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-bool displayDetected = false;
+//Global variables
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+uint8_t unitMACAddress[6]; //Use MAC address in BT broadcast and display
 
-const int FIRMWARE_VERSION_MAJOR = 2;
-const int FIRMWARE_VERSION_MINOR = 7;
+uint32_t lastDisplayUpdate = 0;
+uint32_t lastSatelliteDishIconUpdate = 0;
+bool satelliteDishIconDisplayed = false; //Toggles as lastSatelliteDishIconUpdate goes above 1000ms
+uint32_t lastCrosshairIconUpdate = 0;
+bool crosshairIconDisplayed = false; //Toggles as lastCrosshairIconUpdate goes above 1000ms
+uint32_t lastBaseIconUpdate = 0;
+bool baseIconDisplayed = false; //Toggles as lastSatelliteDishIconUpdate goes above 1000ms
+uint32_t lastRTCMPacketSent = 0; //Used to count RTCM packets sent during base mode
+uint32_t rtcmPacketsSent = 0; //Used to count RTCM packets sent during base mode
+
+//-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 void setup()
 {
-  Wire.begin();
-  Wire.setClock(100000);
-
   Serial.begin(115200);
   delay(100);
   Serial.println("OLED example");
+
+  Wire.begin();
+  Wire.setClock(400000);
+
+  //Get unit MAC address
+  esp_read_mac(unitMACAddress, ESP_MAC_WIFI_STA);
+  unitMACAddress[5] += 2; //Convert MAC address to Bluetooth MAC (add 2): https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/system.html#mac-address
 
   //0x3D is default on Qwiic board
   if (isConnected(0x3D) == true || isConnected(0x3C) == true)
   {
     Serial.println("Display detected");
-    displayDetected = true;
+    online.display = true;
   }
   else
     Serial.println("No display detected");
 
-  if (displayDetected)
+  if (online.display)
   {
     oled.begin();     // Initialize the OLED
     oled.clear(PAGE); // Clear the display's internal memory
-
-    oled.setCursor(10, 2); //x, y
-    oled.setFontType(0); //Set font to smallest
-    oled.print("SparkFun");
-
-    oled.setCursor(21, 13);
-    oled.setFontType(1);
-    oled.print("RTK");
-
-    int surveyorTextY = 25;
-    int surveyorTextX = 2;
-    int surveyorTextKerning = 8;
-    oled.setFontType(1);
-
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("S");
-
-    surveyorTextX += surveyorTextKerning;
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("u");
-
-    surveyorTextX += surveyorTextKerning;
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("r");
-
-    surveyorTextX += surveyorTextKerning;
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("v");
-
-    surveyorTextX += surveyorTextKerning;
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("e");
-
-    surveyorTextX += surveyorTextKerning;
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("y");
-
-    surveyorTextX += surveyorTextKerning;
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("o");
-
-    surveyorTextX += surveyorTextKerning;
-    oled.setCursor(surveyorTextX, surveyorTextY);
-    oled.print("r");
-
-    oled.setCursor(20, 41);
-    oled.setFontType(0); //Set font to smallest
-    oled.printf("v%d.%d", FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR);
-    oled.display();
-
-    //while(1) delay(10);
+    oled.clear(ALL);  // Clear the library's display buffer
   }
-}
 
-float counter = 1.042;
+  beginFuelGauge(); //Configure battery fuel guage monitor
+  checkBatteryLevels(); //Force display so you see battery level immediately at power on
+
+  //beginBluetooth(); //Get MAC, start radio
+
+  beginGNSS(); //Connect and configure ZED-F9P
+
+  //radioState = BT_CONNECTED; //Uncomment to display BT icon
+  //baseState = BASE_SURVEYING_IN_SLOW;
+
+  //Change screens
+  //currentScreen = SCREEN_ROVER_RTCM;
+  currentScreen = SCREEN_BASE_SURVEYING_NOTSTARTED;
+  //currentScreen = SCREEN_BASE_SURVEYING_STARTED;
+  //currentScreen = SCREEN_BASE_TRANSMITTING;
+}
 
 void loop()
 {
-  if (displayDetected)
-  {
-    oled.clear(PAGE); // Clear the display's internal memory
+  myGNSS.checkUblox(); //Regularly poll to get latest data and any RTCM
 
-    oled.drawIcon(45, 0, Battery_2_Width, Battery_2_Height, Battery_2, sizeof(Battery_2), true);
+  updateDisplay();
 
-    oled.setFontType(1); //Set font to type 1: 8x16
+  //TODO - add button check here to start survey
 
-    //Rover = Horizontal positional accuracy, Base = 3D Mean Accuracy
-    float hpa;
+  //Serial.print(".");
 
-    //hpa = counter + 0.123;
-    hpa = 10.7161;
-
-    oled.setCursor(16, 20); //x, y
-    oled.print(":");
-
-    if (hpa > 30)
-    {
-      oled.print(">30");
-    }
-    else if (hpa > 9.9)
-    {
-      oled.print(hpa, 1); //Print down to decimeter
-    }
-    else if (hpa > 1.0)
-    {
-      oled.print(hpa, 2); //Print down to centimeter
-    }
-    else
-    {
-      oled.print("."); //Remove leading zero
-      oled.printf("%03d", (int)(hpa * 1000)); //Print down to millimeter
-    }
-
-    //SIV
-    oled.setCursor(16, 36); //x, y
-    oled.print(":24");
-
-    //Bluetooth Address
-//    oled.setFontType(0); //Set font to type 0:
-//    oled.setCursor(0, 4); //x, y
-//    oled.print("BC5D");
-    oled.drawIcon(4, 0, BT_Symbol_Width, BT_Symbol_Height, BT_Symbol, sizeof(BT_Symbol), true);
-
-        oled.drawIcon(27, 3, Rover_Width, Rover_Height, Rover, sizeof(Rover), true);
-    //    oled.drawIcon(27, 0, Base_Width, Base_Height, Base, sizeof(Base), true);
-
-    oled.drawIcon(0, 18, CrossHair_Width, CrossHair_Height, CrossHair, sizeof(CrossHair), true);
-
-    oled.drawIcon(2, 35, Antenna_Width, Antenna_Height, Antenna, sizeof(Antenna), true);
-
-    oled.display();
-
-    //while(1);
-  }
-
-  //Fix type
-  //None
-  //3D
-  //RTK Fix
-  //RTK Float
-  //TIME - Base thing
-
-  Serial.print(".");
-  delay(250);
+  delay(10);
 }

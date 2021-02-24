@@ -13,6 +13,8 @@
   xTasks need a semaphore for hardware resources so we have a mutex semaphore for I2C.
 
   This implementation still has display errors for unknown reasons. The size of the stack buffers is also a concern.
+
+  Working now, with PWM LEDs removed?
 */
 
 
@@ -24,25 +26,17 @@ const int FIRMWARE_VERSION_MINOR = 1;
 SemaphoreHandle_t xI2CSemaphore;
 const int i2cSemaphore_maxWait = 0; //TickType_t
 
-TaskHandle_t updateBTLEDTaskHandle = NULL;
 TaskHandle_t checkBatteryTaskHandle = NULL;
-TaskHandle_t updateDisplayTaskHandle = NULL;
 TaskHandle_t checkUbloxTaskHandle = NULL;
+
+TaskHandle_t iconBluetoothTaskHandle = NULL;
+TaskHandle_t iconHorzAccTaskHandle = NULL;
+
+TaskHandle_t paintDisplayTaskHandle = NULL;
 
 //Hardware connections
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-const int positionAccuracyLED_1cm = 2;
-const int baseStatusLED = 4;
-const int baseSwitch = 5;
-const int bluetoothStatusLED = 12;
-const int positionAccuracyLED_100cm = 13;
-const int positionAccuracyLED_10cm = 15;
-const byte PIN_MICROSD_CHIP_SELECT = 25;
-const int zed_tx_ready = 26;
-const int zed_reset = 27;
-const int batteryLevelLED_Red = 32;
-const int batteryLevelLED_Green = 33;
-const int batteryLevel_alert = 36;
+
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 //External Display
@@ -59,11 +53,11 @@ MicroOLED oled(PIN_RESET, DC_JUMPER);
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 #define MAX_PAYLOAD_SIZE 384 // Override MAX_PAYLOAD_SIZE for getModuleInfo which can return up to 348 bytes
 
-#include "SparkFun_Ublox_Arduino_Library.h" //Click here to get the library: http://librarymanager/All#SparkFun_Ublox_GPS
-//SFE_UBLOX_GPS myGPS;
+#include <SparkFun_u-blox_GNSS_Arduino_Library.h> //http://librarymanager/All#SparkFun_u-blox_GNSS
+//SFE_UBLOX_GNSS myGNSS;
 
 // Extend the class for getModuleInfo - See Example21_ModuleInfo
-class SFE_UBLOX_GPS_ADD : public SFE_UBLOX_GPS
+class SFE_UBLOX_GNSS_ADD : public SFE_UBLOX_GNSS
 {
   public:
     boolean getModuleInfo(uint16_t maxWait = 1100); //Queries module, texts
@@ -77,7 +71,7 @@ class SFE_UBLOX_GPS_ADD : public SFE_UBLOX_GPS
     } minfo;
 };
 
-SFE_UBLOX_GPS_ADD myGPS;
+SFE_UBLOX_GNSS_ADD myGNSS;
 
 //This string is used to verify the firmware on the ZED-F9P. This
 //firmware relies on various features of the ZED and may require the latest
@@ -96,12 +90,6 @@ uint8_t settingPayload[MAX_PAYLOAD_SIZE];
 #include <SparkFun_MAX1704x_Fuel_Gauge_Arduino_Library.h> // Click here to get the library: http://librarymanager/All#SparkFun_MAX1704x_Fuel_Gauge_Arduino_Library
 SFE_MAX1704X lipo(MAX1704X_MAX17048);
 
-// setting PWM properties
-const int freq = 5000;
-const int ledRedChannel = 0;
-const int ledGreenChannel = 1;
-const int resolution = 8;
-
 int battLevel = 0; //SOC measured from fuel gauge, in %. Used in multiple places (display, serial debug, log)
 float battVoltage = 0.0;
 float battChangeRate = 0.0;
@@ -115,12 +103,8 @@ void setup()
   delay(100);
   Serial.println("Testing tasks");
 
-  pinMode(bluetoothStatusLED, OUTPUT);
-
   Wire.begin();
   //Wire.setClock(100000);
-
-  beginLEDs(); //LED and PWM setup
 
   beginDisplay(); //Check if an external Qwiic OLED is attached
 
@@ -140,12 +124,12 @@ void setup()
   }
 
   //Start tasks
-  xTaskCreate(updateBTLEDTask, "BTLED", 1000, NULL, 0, &updateBTLEDTaskHandle);
+  xTaskCreate(iconBluetoothTask, "BTLED", 500, NULL, 0, &iconBluetoothTaskHandle); //1000 ok, 500ok
   xTaskCreate(checkBatteryTask, "CheckBatt", 1000, NULL, 0, &checkBatteryTaskHandle);
-  xTaskCreate(checkUbloxTask, "CheckUblox", 4000, NULL, 0, &checkUbloxTaskHandle);
+  xTaskCreate(checkUbloxTask, "CheckUblox", 1000, NULL, 0, &checkUbloxTaskHandle); //4000 ok, 1000ok
 
   if (online.display == true)
-    xTaskCreate(updateDisplayTask, "UpdateDisplay", 2000, NULL, 0, &updateDisplayTaskHandle);
+    xTaskCreate(paintDisplayTask, "PaintDisplay", 2000, NULL, 0, &paintDisplayTaskHandle);
 }
 
 long lastDisplayUpdate = 0;
