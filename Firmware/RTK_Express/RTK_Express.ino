@@ -190,25 +190,33 @@ char deviceName[20]; //The serial string that is broadcast. Ex: 'Surveyor Base-B
 const byte menuTimeout = 15; //Menus will exit/timeout after this number of seconds
 bool inTestMode = false; //Used to re-route BT traffic while in test sub menu
 long systemTime_minutes = 0; //Used to test if logging is less than max minutes
-bool setupButtonRecorded = false; //Records state change as user presses setup button
+//bool setupButtonRecorded = false; //Records state change as user presses setup button
 uint32_t powerPressedStartTime = 0; //Times how long user has been holding power button, used for power down
 uint8_t debounceDelay = 20; //ms to delay between button reads
 
-uint32_t lastRoverUpdate = 0;
-uint32_t lastBaseUpdate = 0;
-uint32_t lastBattUpdate = 0;
-
-uint32_t lastTime = 0;
-
+//uint32_t lastRoverUpdate = 0;
+//uint32_t lastBaseUpdate = 0;
+uint32_t lastBattUpdate = 0; //Allows us to check peripherals at different rates (ie 0.5Hz, 4Hz, etc)
 uint32_t lastDisplayUpdate = 0;
+uint32_t lastSystemStateUpdate = 0;
+//uint32_t lastTime = 0;
+
 uint32_t lastSatelliteDishIconUpdate = 0;
 bool satelliteDishIconDisplayed = false; //Toggles as lastSatelliteDishIconUpdate goes above 1000ms
 uint32_t lastCrosshairIconUpdate = 0;
 bool crosshairIconDisplayed = false; //Toggles as lastCrosshairIconUpdate goes above 1000ms
 uint32_t lastBaseIconUpdate = 0;
 bool baseIconDisplayed = false; //Toggles as lastSatelliteDishIconUpdate goes above 1000ms
+uint32_t lastWifiIconUpdate = 0;
+bool wifiIconDisplayed = false; //Toggles as lastWifiIconUpdate goes above 1000ms
+
 uint32_t lastRTCMPacketSent = 0; //Used to count RTCM packets sent during base mode
 uint32_t rtcmPacketsSent = 0; //Used to count RTCM packets sent during base mode
+
+uint32_t casterResponseWaitStartTime = 0; //Used to detect if caster service times out
+
+uint32_t maxSurveyInWait_s = 60L * 15L; //Re-start survey-in after X seconds
+
 //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 void setup()
@@ -269,23 +277,9 @@ void loop()
 
   checkSetupButton(); //See if user wants to be rover or base
 
-  if (baseState == BASE_SURVEYING_IN_NOTSTARTED || baseState == BASE_SURVEYING_IN_SLOW || baseState == BASE_SURVEYING_IN_FAST)
-  {
-    updateSurveyInStatus();
-  }
-  else if (baseState == BASE_TRANSMITTING)
-  {
-    if (settings.enableNtripServer == true)
-    {
-      updateNtripServer();
-    }
-  }
-  else if (baseState == BASE_OFF)
-  {
-    updateRoverStatus();
-  }
+  checkBatteryLevels();
 
-  updateBattLEDs();
+  updateSystemState();
 
   updateDisplay();
 

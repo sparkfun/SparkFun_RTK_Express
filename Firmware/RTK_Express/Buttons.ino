@@ -1,37 +1,72 @@
-//Check setup button and move between base and rover states
+//Check setup button and move between base and rover configurations
+//Since the setup button is the only state change the user can directly affect
+//we do the state changes here rather than in updateSystemState()
 void checkSetupButton()
 {
   //Check setup button and configure module accordingly
-  if (digitalRead(setupButton) == LOW && setupButtonRecorded == false)
+  if (digitalRead(setupButton) == LOW || digitalRead(powerSenseAndControl) == LOW)
   {
     delay(20); //Debounce
-    if (digitalRead(setupButton) == LOW)
+    if (digitalRead(setupButton) == LOW || digitalRead(powerSenseAndControl) == LOW)
     {
-      setupButtonRecorded = true;
-
-      if (baseState == BASE_OFF)
+      if (systemState == STATE_ROVER_NO_FIX ||
+          systemState == STATE_ROVER_FIX ||
+          systemState == STATE_ROVER_RTK_FLOAT ||
+          systemState == STATE_ROVER_RTK_FIX)
       {
+        displayBaseStart();
+
         //Configure for base mode
         Serial.println(F("Base Mode"));
 
         if (configureUbloxModuleBase() == false)
         {
           Serial.println(F("Base config failed!"));
+          displayBaseFail();
           return;
         }
-
-        baseState = BASE_SURVEYING_IN_NOTSTARTED; //Switch to new state
-        currentScreen = SCREEN_BASE_SURVEYING_NOTSTARTED;
 
         //Restart Bluetooth with 'Base' name
         //We start BT regardless of Ntrip Server in case user wants to transmit survey-in stats over BT
         beginBluetooth();
+
+        if (settings.fixedBase == false)
+        {
+          systemState = STATE_BASE_TEMP_SURVEY_NOT_STARTED;
+        }
+        else if (settings.fixedBase == true)
+        {
+          bool response = startFixedBase();
+          if (response == true)
+          {
+            systemState = STATE_BASE_FIXED_TRANSMITTING;
+          }
+          else
+          {
+            //TODO maybe create a custom fixed base fail screen
+            Serial.println(F("Fixed base start failed!"));
+            displayBaseFail();
+            return;
+          }
+        }
+
+        displayBaseSuccess();
       }
-      else if (baseState == BASE_SURVEYING_IN_NOTSTARTED ||
-               baseState == BASE_SURVEYING_IN_SLOW ||
-               baseState == BASE_SURVEYING_IN_FAST ||
-               baseState == BASE_TRANSMITTING)
+      else if (systemState == STATE_BASE_TEMP_SURVEY_NOT_STARTED ||
+               systemState == STATE_BASE_TEMP_SURVEY_STARTED ||
+               systemState == STATE_BASE_TEMP_TRANSMITTING ||
+               systemState == STATE_BASE_TEMP_WIFI_STARTED ||
+               systemState == STATE_BASE_TEMP_WIFI_CONNECTED ||
+               systemState == STATE_BASE_TEMP_CASTER_STARTED ||
+               systemState == STATE_BASE_TEMP_CASTER_CONNECTED ||
+               systemState == STATE_BASE_FIXED_TRANSMITTING ||
+               systemState == STATE_BASE_FIXED_WIFI_STARTED ||
+               systemState == STATE_BASE_FIXED_WIFI_CONNECTED ||
+               systemState == STATE_BASE_FIXED_CASTER_STARTED ||
+               systemState == STATE_BASE_FIXED_CASTER_CONNECTED)
       {
+        displayRoverStart();
+
         //Configure for rover mode
         Serial.println(F("Rover Mode"));
 
@@ -39,19 +74,16 @@ void checkSetupButton()
         if (configureUbloxModuleRover() == false)
         {
           Serial.println(F("Rover config failed!"));
+          displayRoverFail();
           return;
         }
 
-        baseState = BASE_OFF;
-        currentScreen = SCREEN_ROVER;
-
         beginBluetooth(); //Restart Bluetooth with 'Rover' name
+
+        systemState = STATE_ROVER_NO_FIX;
+        displayRoverSuccess();
       }
     }
-  }
-  else if (digitalRead(setupButton) == HIGH && setupButtonRecorded == true)
-  {
-    setupButtonRecorded = false;
   }
 }
 
@@ -70,7 +102,7 @@ void powerOnCheck()
   }
 
   if (millis() - powerPressedStartTime < 500)
-    powerDown(); //Power button tap. Returning to off state.
+    powerDown(false); //Power button tap. Returning to off state.
 
   powerPressedStartTime = 0; //Reset var to return to normal 'on' state
 }
@@ -96,7 +128,7 @@ void checkPowerButton()
       if ((millis() - powerPressedStartTime) > 2000)
       {
         Serial.println("Time to power down!");
-        powerDown();
+        powerDown(true);
       }
     }
   }
@@ -113,10 +145,15 @@ void checkPowerButton()
   }
 }
 
-void powerDown()
+//If we have a power button tap, or if the display is not yet started (no I2C!)
+//then don't display a shutdown screen
+void powerDown(bool displayInfo)
 {
-  displayShutdown();
-  delay(2000);
+  if (displayInfo == true)
+  {
+    displayShutdown();
+    delay(2000);
+  }
 
   pinMode(powerSenseAndControl, OUTPUT);
   digitalWrite(powerSenseAndControl, LOW);

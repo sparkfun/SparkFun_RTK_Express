@@ -73,8 +73,8 @@ void F9PSerialReadTask(void *e)
     {
       auto s = GPS.readBytes(rBuffer, SERIAL_SIZE_RX);
 
-      //If we are actively survey-in then do not pass NMEA data from ZED to phone
-      if (baseState == BASE_SURVEYING_IN_SLOW || baseState == BASE_SURVEYING_IN_FAST)
+      //If we are survey-in then do not pass NMEA data from ZED to phone
+      if (systemState == STATE_BASE_TEMP_SURVEY_NOT_STARTED || systemState == STATE_BASE_TEMP_SURVEY_STARTED)
       {
         //Do nothing
       }
@@ -190,13 +190,17 @@ bool configureUbloxModule()
     return (false);
   }
 
-  //Check base state and configure module accordingly
-  if (baseState == BASE_OFF)
+  //Check system state and configure module accordingly
+  if (systemState == STATE_ROVER_NO_FIX ||
+      systemState == STATE_ROVER_FIX ||
+      systemState == STATE_ROVER_RTK_FLOAT ||
+      systemState == STATE_ROVER_RTK_FIX)
   {
     //Configure for rover mode
     if (configureUbloxModuleRover() == false)
     {
       Serial.println(F("Rover config failed!"));
+      //displayRoverFail(); //Don't display here. Display error in higher level function.
       return (false);
     }
   }
@@ -206,6 +210,7 @@ bool configureUbloxModule()
     if (configureUbloxModuleBase() == false)
     {
       Serial.println(F("Base config failed!"));
+      //displayBaseFail();
       return (false);
     }
   }
@@ -510,54 +515,46 @@ void btCallback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param) {
   }
 }
 
-//Update Battery level LEDs every 5s
-void updateBattLEDs()
-{
-  if (millis() - lastBattUpdate > 5000)
-  {
-    lastBattUpdate = millis();
-
-    checkBatteryLevels();
-  }
-}
-
 //When called, checks level of battery and updates the LED brightnesses
 //And outputs a serial message to USB
 void checkBatteryLevels()
 {
-  //long startTime = millis();
-
-  battLevel = lipo.getSOC();
-  battVoltage = lipo.getVoltage();
-  battChangeRate = lipo.getChangeRate();
-
-  Serial.printf("Batt (%d%%): Voltage: %0.02fV", battLevel, battVoltage);
-
-  char tempStr[25];
-  if (battChangeRate > 0)
-    sprintf(tempStr, "C");
-  else
-    sprintf(tempStr, "Disc");
-  Serial.printf(" %sharging: %0.02f%%/hr ", tempStr, battChangeRate);
-
-  if (battLevel < 10)
+  if (millis() - lastBattUpdate > 1000)
   {
-    sprintf(tempStr, "RED uh oh!");
-  }
-  else if (battLevel < 50)
-  {
-    sprintf(tempStr, "Yellow ok");
-  }
-  else if (battLevel >= 50)
-  {
-    sprintf(tempStr, "Green all good");
-  }
-  else
-  {
-    sprintf(tempStr, "No batt");
-  }
+    lastBattUpdate = millis();
 
-  Serial.printf("%s\n", tempStr);
+    battLevel = lipo.getSOC();
+    battVoltage = lipo.getVoltage();
+    battChangeRate = lipo.getChangeRate();
+
+    Serial.printf("Batt (%d%%): Voltage: %0.02fV", battLevel, battVoltage);
+
+    char tempStr[25];
+    if (battChangeRate > 0)
+      sprintf(tempStr, "C");
+    else
+      sprintf(tempStr, "Disc");
+    Serial.printf(" %sharging: %0.02f%%/hr ", tempStr, battChangeRate);
+
+    if (battLevel < 10)
+    {
+      sprintf(tempStr, "RED uh oh!");
+    }
+    else if (battLevel < 50)
+    {
+      sprintf(tempStr, "Yellow ok");
+    }
+    else if (battLevel >= 50)
+    {
+      sprintf(tempStr, "Green all good");
+    }
+    else
+    {
+      sprintf(tempStr, "No batt");
+    }
+
+    Serial.printf("%s\n", tempStr);
+  }
 }
 
 //Ping an I2C device and see if it responds

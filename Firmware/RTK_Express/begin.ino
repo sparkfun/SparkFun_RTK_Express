@@ -121,13 +121,20 @@ bool beginBluetooth()
   esp_read_mac(unitMACAddress, ESP_MAC_WIFI_STA);
   unitMACAddress[5] += 2; //Convert MAC address to Bluetooth MAC (add 2): https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/system.html#mac-address
 
-  if (baseState == BASE_OFF)
-    sprintf(deviceName, "Explorer Rover-%02X%02X", unitMACAddress[4], unitMACAddress[5]); //Rover mode
-  else if (baseState == BASE_SURVEYING_IN_NOTSTARTED ||
-           baseState == BASE_SURVEYING_IN_SLOW ||
-           baseState == BASE_SURVEYING_IN_FAST ||
-           baseState == BASE_TRANSMITTING)
-    sprintf(deviceName, "Explorer Base-%02X%02X", unitMACAddress[4], unitMACAddress[5]); //Base mode
+  if (systemState == STATE_ROVER_NO_FIX ||
+      systemState == STATE_ROVER_FIX ||
+      systemState == STATE_ROVER_RTK_FLOAT ||
+      systemState == STATE_ROVER_RTK_FIX)
+    sprintf(deviceName, "Express Rover-%02X%02X", unitMACAddress[4], unitMACAddress[5]); //Rover mode
+  else if (systemState == STATE_BASE_TEMP_SURVEY_NOT_STARTED ||
+           systemState == STATE_BASE_TEMP_SURVEY_STARTED ||
+           systemState == STATE_BASE_TEMP_TRANSMITTING ||
+           systemState == STATE_BASE_TEMP_WIFI_STARTED ||
+           systemState == STATE_BASE_TEMP_WIFI_CONNECTED ||
+           systemState == STATE_BASE_FIXED_TRANSMITTING ||
+           systemState == STATE_BASE_FIXED_WIFI_STARTED ||
+           systemState == STATE_BASE_FIXED_WIFI_CONNECTED)
+    sprintf(deviceName, "Express Base-%02X%02X", unitMACAddress[4], unitMACAddress[5]); //Base mode
 
   if (SerialBT.begin(deviceName) == false)
   {

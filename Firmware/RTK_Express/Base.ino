@@ -1,106 +1,3 @@
-//Wait for survey in to complete
-bool updateSurveyInStatus()
-{
-  //If user wants to use fixed coordinates, do so immediately
-  if (settings.fixedBase == true)
-  {
-    bool response = startFixedBase();
-    if (response == true)
-    {
-      baseState = BASE_TRANSMITTING;
-      currentScreen = SCREEN_BASE_FIXED_TRANSMITTING;
-      return (true);
-    }
-    else
-    {
-      return (false);
-    }
-  }
-
-  //Update the LEDs only every second or so
-  if (millis() - lastBaseUpdate > 1000)
-  {
-    lastBaseUpdate = millis();
-
-    if (baseState == BASE_SURVEYING_IN_NOTSTARTED)
-    {
-      //Check for <5m horz accuracy
-      uint32_t accuracy = myGNSS.getHorizontalAccuracy(250); //This call defaults to 1100ms and can cause the core to crash with WDT timeout
-
-      float f_accuracy = accuracy;
-      f_accuracy = f_accuracy / 10000.0; // Convert the horizontal accuracy (mm * 10^-1) to a float
-
-      if (f_accuracy > 0.0 && f_accuracy < 5.0)
-      {
-        //Current positional accuracy is within 5m so start survey
-        surveyIn();
-      }
-      else
-      {
-        Serial.print(F("Waiting for Horz Accuracy < 5 meters: "));
-        Serial.print(f_accuracy, 2); // Print the accuracy with 2 decimal places
-        Serial.println();
-      }
-    } //baseState = Surveying In Not started
-    else
-    {
-
-      bool response = myGNSS.getSurveyStatus(2000); //Query module for SVIN status with 2000ms timeout (req can take a long time)
-      if (response == true)
-      {
-        if (myGNSS.getSurveyInValid() == true)
-        {
-          Serial.println(F("Base survey complete! RTCM now broadcasting."));
-          baseState = BASE_TRANSMITTING;
-          currentScreen = SCREEN_BASE_TRANSMITTING;
-
-          //TODO Indicate RTCM on display digitalWrite(baseStatusLED, HIGH); //Turn on LED
-        }
-        else
-        {
-          currentScreen = SCREEN_BASE_SURVEYING_STARTED;
-
-          byte SIV = myGNSS.getSIV();
-
-          Serial.print(F("Time elapsed: "));
-          Serial.print((String)myGNSS.getSurveyInObservationTime());
-          Serial.print(F(" Accuracy: "));
-          Serial.print((String)myGNSS.getSurveyInMeanAccuracy());
-          Serial.print(F(" SIV: "));
-          Serial.print(SIV);
-          Serial.println();
-
-          SerialBT.print(F("Time elapsed: "));
-          SerialBT.print((String)myGNSS.getSurveyInObservationTime());
-          SerialBT.print(F(" Accuracy: "));
-          SerialBT.print((String)myGNSS.getSurveyInMeanAccuracy());
-          SerialBT.print(F(" SIV: "));
-          SerialBT.print(SIV);
-          SerialBT.println();
-
-          //If we are greater than a meter out of our objective, blink slow
-          if (myGNSS.getSurveyInMeanAccuracy() > (settings.observationPositionAccuracy + 1.0))
-            baseState = BASE_SURVEYING_IN_SLOW;
-          else
-            baseState = BASE_SURVEYING_IN_FAST;
-
-          if (myGNSS.getSurveyInObservationTime() > maxSurveyInWait_s)
-          {
-            Serial.printf("Survey-In took more than %d minutes. Restarting survey-in process.\n", maxSurveyInWait_s / 60);
-
-            resetSurvey();
-
-            surveyIn();
-          }
-        }
-      }
-      else
-      {
-        Serial.println(F("SVIN request failed"));
-      }
-    } //baseState = Surveying In Slow or fast
-  } //Check every second
-}
 
 //Configure specific aspects of the receiver for base mode
 bool configureUbloxModuleBase()
@@ -159,7 +56,7 @@ bool configureUbloxModuleBase()
 
 //Start survey
 //The ZED-F9P is slightly different than the NEO-M8P. See the Integration manual 3.5.8 for more info.
-void surveyIn()
+bool surveyIn()
 {
   resetSurvey();
 
@@ -167,14 +64,15 @@ void surveyIn()
   if (response == false)
   {
     Serial.println(F("Survey start failed"));
-    return;
+    return(false);
   }
+
   Serial.printf("Survey started. This will run until %d seconds have passed and less than %0.03f meter accuracy is achieved.\n",
                 settings.observationSeconds,
                 settings.observationPositionAccuracy
                );
 
-  baseState = BASE_SURVEYING_IN_SLOW;
+  return(true);
 }
 
 void resetSurvey()

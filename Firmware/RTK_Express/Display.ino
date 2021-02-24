@@ -1,3 +1,4 @@
+//Given the system state, display the appropriate information
 void updateDisplay()
 {
   //Update the display if connected
@@ -9,24 +10,57 @@ void updateDisplay()
 
       oled.clear(PAGE); // Clear the display's internal buffer
 
-      paintBatteryLevel(); //Top right corner
-
-      paintWirelessIcon(); //Top left corner
-
-      paintBaseState(); //Top center
-
-      if (currentScreen == SCREEN_ROVER)
-        paintRover();
-      else if (currentScreen == SCREEN_ROVER_RTCM)
-        paintRoverRTCM();
-      else if (currentScreen == SCREEN_BASE_SURVEYING_NOTSTARTED)
-        paintBaseSurveyNotStarted(); //Blink crosshair
-      else if (currentScreen == SCREEN_BASE_SURVEYING_STARTED)
-        paintBaseSurveyStarted(); //Blink base icon
-      else if (currentScreen == SCREEN_BASE_TRANSMITTING)
-        paintBaseTransmitting();
-      else if (currentScreen == SCREEN_BASE_FAILED)
-        paintBaseFailed();
+      switch (systemState)
+      {
+        case (STATE_ROVER_NO_FIX):
+          paintRoverNoFix();
+          break;
+        case (STATE_ROVER_FIX):
+          paintRoverFix();
+          break;
+        case (STATE_ROVER_RTK_FLOAT):
+          paintRoverRTKFloat();
+          break;
+        case (STATE_ROVER_RTK_FIX):
+          paintRoverRTKFix();
+          break;
+        case (STATE_BASE_TEMP_SURVEY_NOT_STARTED):
+          paintBaseTempSurveyNotStarted();
+          break;
+        case (STATE_BASE_TEMP_SURVEY_STARTED):
+          paintBaseTempSurveyStarted();
+          break;
+        case (STATE_BASE_TEMP_TRANSMITTING):
+          paintBaseTempTransmitting();
+          break;
+        case (STATE_BASE_TEMP_WIFI_STARTED):
+          paintBaseTempWiFiStarted();
+          break;
+        case (STATE_BASE_TEMP_WIFI_CONNECTED):
+          paintBaseTempWiFiConnected();
+          break;
+        case (STATE_BASE_TEMP_CASTER_STARTED):
+          paintBaseTempCasterStarted();
+          break;
+        case (STATE_BASE_TEMP_CASTER_CONNECTED):
+          paintBaseTempCasterConnected();
+          break;
+        case (STATE_BASE_FIXED_TRANSMITTING):
+          paintBaseFixedTransmitting();
+          break;
+        case (STATE_BASE_FIXED_WIFI_STARTED):
+          paintBaseFixedWiFiStarted();
+          break;
+        case (STATE_BASE_FIXED_WIFI_CONNECTED):
+          paintBaseFixedWiFiConnected();
+          break;
+        case (STATE_BASE_FIXED_CASTER_STARTED):
+          paintBaseFixedCasterStarted();
+          break;
+        case (STATE_BASE_FIXED_CASTER_CONNECTED):
+          paintBaseFixedCasterConnected();
+          break;
+      }
 
       oled.display(); //Push internal buffer to display
     }
@@ -119,13 +153,32 @@ void paintBatteryLevel()
 //Display Bluetooth icon, Bluetooth MAC, or WiFi depending on connection state
 void paintWirelessIcon()
 {
-  //TODO - expand to wifi if NTRIP enabled
-  //TODO - blink Wifi if not connected
-
   //Bluetooth icon if paired, or Bluetooth MAC address if not paired
   if (radioState == BT_CONNECTED)
   {
     oled.drawIcon(4, 0, BT_Symbol_Width, BT_Symbol_Height, BT_Symbol, sizeof(BT_Symbol), true);
+  }
+  else if (radioState == WIFI_ON_NOCONNECTION)
+  {
+    //Blink WiFi icon
+    if (millis() - lastWifiIconUpdate > 500)
+    {
+      lastWifiIconUpdate = millis();
+      if (wifiIconDisplayed == false)
+      {
+        wifiIconDisplayed = true;
+
+        //Draw the icon
+        oled.drawIcon(6, 2, WiFi_Symbol_Width, WiFi_Symbol_Height, WiFi_Symbol, sizeof(WiFi_Symbol), true);
+      }
+      else
+        wifiIconDisplayed = false;
+    }
+  }
+  else if (radioState == WIFI_CONNECTED)
+  {
+    //Solid WiFi icon
+    oled.drawIcon(6, 2, WiFi_Symbol_Width, WiFi_Symbol_Height, WiFi_Symbol, sizeof(WiFi_Symbol), true);
   }
   else
   {
@@ -142,11 +195,10 @@ void paintWirelessIcon()
 void paintHorizontalAccuracy()
 {
   //Blink crosshair icon until we achieve <5m horz accuracy (user definable)
-  if (currentScreen == SCREEN_BASE_SURVEYING_NOTSTARTED)
+  if (systemState == STATE_BASE_TEMP_SURVEY_NOT_STARTED)
   {
     if (millis() - lastCrosshairIconUpdate > 500)
     {
-      Serial.println("Crosshair Blink");
       lastCrosshairIconUpdate = millis();
       if (crosshairIconDisplayed == false)
       {
@@ -159,45 +211,30 @@ void paintHorizontalAccuracy()
         crosshairIconDisplayed = false;
     }
   }
-  else if (currentScreen == SCREEN_ROVER_RTCM)
+  else if (systemState == STATE_ROVER_RTK_FLOAT)
   {
-    Serial.println("Dual Crosshair");
-
-    byte rtkSolution = myGNSS.getCarrierSolutionType();
-
-    //No solution
-    if (rtkSolution == 0)
+    if (millis() - lastCrosshairIconUpdate > 500)
     {
-      //We should never be here...
-      //Draw normal crosshair
-      oled.drawIcon(0, 18, CrossHair_Width, CrossHair_Height, CrossHair, sizeof(CrossHair), true);
-    }
-    else if (rtkSolution == 1) //High precision floating fix
-    {
-      if (millis() - lastCrosshairIconUpdate > 500)
+      lastCrosshairIconUpdate = millis();
+      if (crosshairIconDisplayed == false)
       {
-        lastCrosshairIconUpdate = millis();
-        if (crosshairIconDisplayed == false)
-        {
-          crosshairIconDisplayed = true;
+        crosshairIconDisplayed = true;
 
-          //Draw dual crosshair
-          oled.drawIcon(0, 18, CrossHairDual_Width, CrossHairDual_Height, CrossHairDual, sizeof(CrossHairDual), true);
-        }
-        else
-          crosshairIconDisplayed = false;
+        //Draw dual crosshair
+        oled.drawIcon(0, 18, CrossHairDual_Width, CrossHairDual_Height, CrossHairDual, sizeof(CrossHairDual), true);
       }
-
+      else
+        crosshairIconDisplayed = false;
     }
-    else if (rtkSolution == 2) //High precision fix
-    {
-      //Draw dual crosshair
-      oled.drawIcon(0, 18, CrossHairDual_Width, CrossHairDual_Height, CrossHairDual, sizeof(CrossHairDual), true);
-    }
+  }
+  else if (systemState == STATE_ROVER_RTK_FIX)
+  {
+    //Draw dual crosshair
+    oled.drawIcon(0, 18, CrossHairDual_Width, CrossHairDual_Height, CrossHairDual, sizeof(CrossHairDual), true);
   }
   else
   {
-    //Draw the icon
+    //Draw crosshair
     oled.drawIcon(0, 18, CrossHair_Width, CrossHair_Height, CrossHair, sizeof(CrossHair), true);
   }
 
@@ -228,22 +265,23 @@ void paintHorizontalAccuracy()
 //Draw a different base if we have fixed coordinate base type
 void paintBaseState()
 {
-  if (currentScreen == SCREEN_ROVER ||
-      currentScreen == SCREEN_ROVER_RTCM)
+  if (systemState == STATE_ROVER_NO_FIX ||
+      systemState == STATE_ROVER_FIX ||
+      systemState == STATE_ROVER_RTK_FLOAT ||
+      systemState == STATE_ROVER_RTK_FIX)
   {
     oled.drawIcon(27, 3, Rover_Width, Rover_Height, Rover, sizeof(Rover), true);
   }
-  else if (currentScreen == SCREEN_BASE_SURVEYING_NOTSTARTED)
+  else if (systemState == STATE_BASE_TEMP_SURVEY_NOT_STARTED)
   {
-    //Turn on base icon solid, and blink crosshair
+    //Turn on base icon solid (blink crosshair in paintHorzAcc)
     oled.drawIcon(27, 0, Base_Width, Base_Height, Base, sizeof(Base), true); //true - blend with other pixels
   }
-  else if (currentScreen == SCREEN_BASE_SURVEYING_STARTED)
+  else if (systemState == STATE_BASE_TEMP_SURVEY_STARTED)
   {
     //Blink base icon until survey is complete
     if (millis() - lastBaseIconUpdate > 500)
     {
-      Serial.println("Base Blink");
       lastBaseIconUpdate = millis();
       if (baseIconDisplayed == false)
       {
@@ -256,12 +294,24 @@ void paintBaseState()
         baseIconDisplayed = false;
     }
   }
-  else if (currentScreen == SCREEN_BASE_TRANSMITTING)
+  else if (systemState == STATE_BASE_TEMP_TRANSMITTING ||
+           systemState == STATE_BASE_TEMP_WIFI_STARTED ||
+           systemState == STATE_BASE_TEMP_WIFI_CONNECTED ||
+           systemState == STATE_BASE_TEMP_CASTER_STARTED ||
+           systemState == STATE_BASE_TEMP_CASTER_CONNECTED)
   {
     //Draw the icon
     oled.drawIcon(27, 0, Base_Width, Base_Height, Base, sizeof(Base), true); //true - blend with other pixels
   }
-
+  else if (systemState == STATE_BASE_FIXED_TRANSMITTING ||
+           systemState == STATE_BASE_FIXED_WIFI_STARTED ||
+           systemState == STATE_BASE_FIXED_WIFI_CONNECTED ||
+           systemState == STATE_BASE_FIXED_CASTER_STARTED ||
+           systemState == STATE_BASE_FIXED_CASTER_CONNECTED)
+  {
+    //Draw the icon
+    oled.drawIcon(27, 0, BaseFixed_Width, BaseFixed_Height, BaseFixed, sizeof(BaseFixed), true); //true - blend with other pixels
+  }
 }
 
 //Draw satellite icon and sats in view
@@ -308,58 +358,119 @@ void paintSIV()
 
 //Base screen. Display BLE, rover, battery, HorzAcc and SIV
 //Blink SIV until fix
-void paintRover()
+void paintRoverNoFix()
 {
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
   paintHorizontalAccuracy();
 
   paintSIV();
 }
 
-//Blink the HorzAcc dual Crosshair while RTK Float, solid when fixed
-void paintRoverRTCM()
+//Currently identical to RoverNoFix because paintSIV and paintHorizontalAccuracy takes into account system states
+void paintRoverFix()
 {
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
   paintHorizontalAccuracy();
 
   paintSIV();
 }
 
+//Currently identical to RoverNoFix because paintSIV and paintHorizontalAccuracy takes into account system states
+void paintRoverRTKFloat()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  paintHorizontalAccuracy();
+
+  paintSIV();
+}
+
+void paintRoverRTKFix()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  paintHorizontalAccuracy();
+
+  paintSIV();
+}
 
 //Start of base / survey in / NTRIP mode
 //Screen is displayed while we are waiting for horz accuracy to drop to appropriate level
 //Blink crosshair icon until we have we have horz accuracy < user defined level
-void paintBaseSurveyNotStarted()
+void paintBaseTempSurveyNotStarted()
 {
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
   paintHorizontalAccuracy(); //2nd line
 
   paintSIV();
 }
 
 //Survey in is running. Show 3D Mean and elapsed time.
-void paintBaseSurveyStarted()
+void paintBaseTempSurveyStarted()
 {
-  float meanAccuracy = myGNSS.getSurveyInMeanAccuracy();
+  paintBatteryLevel(); //Top right corner
 
-  //oled.setFontType(1); //Set font to type 1: 8x16
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  float meanAccuracy = myGNSS.getSurveyInMeanAccuracy(100);
+  int elapsedTime = myGNSS.getSurveyInObservationTime(100);
+
+  //Stopped. We either need a call back or we accept a 2s update to screen. Something is taking a lot of polling time.
+
+  //  deleteMeElapsedTime++;
+
   oled.setFontType(0);
   oled.setCursor(0, 22); //x, y
   oled.print("Mean:");
 
-  oled.setCursor(29, 20); //x, y
-  oled.setFontType(1); //Set font to type 1: 8x16
+  oled.setCursor(30, 20); //x, y
+  oled.setFontType(1);
   oled.print(meanAccuracy, 2);
 
   oled.setCursor(0, 38); //x, y
   oled.setFontType(0);
   oled.print("Time:");
 
-  oled.setCursor(29, 36); //x, y
-  oled.setFontType(1); //Set font to type 1: 8x16
-  oled.print((String)myGNSS.getSurveyInObservationTime());
+  oled.setCursor(30, 36); //x, y
+  oled.setFontType(1);
+  oled.print(elapsedTime);
+  //oled.print(deleteMeElapsedTime);
 }
 
 //Show transmission of RTCM packets
-void paintBaseTransmitting()
+void paintBaseTempTransmitting()
 {
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
   int textX = 2;
   int textY = 20;
   int textKerning = 8;
@@ -372,13 +483,389 @@ void paintBaseTransmitting()
 
   oled.setCursor(29, 36); //x, y
   oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
+  oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
+}
+
+//Show transmission of RTCM packets
+//Blink WiFi icon
+void paintBaseTempWiFiStarted()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 2;
+  int textY = 20;
+  int textKerning = 8;
+  oled.setFontType(1);
+  printTextwithKerning("Xmitting", textX, textY, textKerning);
+
+  oled.setCursor(0, 38); //x, y
+  oled.setFontType(0);
+  oled.print("RTCM:");
+
+  oled.setCursor(29, 36); //x, y
+  oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
+  oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
+}
+
+//Show transmission of RTCM packets
+//Solid WiFi icon
+//This is identical to paintBaseTempWiFiStarted
+void paintBaseTempWiFiConnected()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 2;
+  int textY = 20;
+  int textKerning = 8;
+  oled.setFontType(1);
+  printTextwithKerning("Xmitting", textX, textY, textKerning);
+
+  oled.setCursor(0, 38); //x, y
+  oled.setFontType(0);
+  oled.print("RTCM:");
+
+  oled.setCursor(29, 36); //x, y
+  oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
+  oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
+}
+
+//Show connecting to caster service
+//Solid WiFi icon
+void paintBaseTempCasterStarted()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 11;
+  int textY = 18;
+  int textKerning = 8;
+
+  printTextwithKerning("Caster", textX, textY, textKerning);
+
+  textX = 3;
+  textY = 33;
+  textKerning = 6;
+  oled.setFontType(1);
+
+  printTextwithKerning("Connecting", textX, textY, textKerning);
+}
+
+//Show transmission of RTCM packets to caster service
+//Solid WiFi icon
+void paintBaseTempCasterConnected()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 4;
+  int textY = 20;
+  int textKerning = 8;
+  oled.setFontType(1);
+  printTextwithKerning("Casting", textX, textY, textKerning);
+
+  oled.setCursor(0, 38); //x, y
+  oled.setFontType(0);
+  oled.print("RTCM:");
+
+  oled.setCursor(29, 36); //x, y
+  oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
+  oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
+}
+
+//Show transmission of RTCM packets
+void paintBaseFixedTransmitting()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 2;
+  int textY = 20;
+  int textKerning = 8;
+  oled.setFontType(1);
+  printTextwithKerning("Xmitting", textX, textY, textKerning);
+
+  oled.setCursor(0, 38); //x, y
+  oled.setFontType(0);
+  oled.print("RTCM:");
+
+  oled.setCursor(29, 36); //x, y
+  oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
+  oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
+}
+
+//Show transmission of RTCM packets
+//Blink WiFi icon
+void paintBaseFixedWiFiStarted()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 2;
+  int textY = 20;
+  int textKerning = 8;
+  oled.setFontType(1);
+  printTextwithKerning("Xmitting", textX, textY, textKerning);
+
+  oled.setCursor(0, 38); //x, y
+  oled.setFontType(0);
+  oled.print("RTCM:");
+
+  oled.setCursor(29, 36); //x, y
+  oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
+  oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
+}
+
+//Show transmission of RTCM packets
+//Solid WiFi icon
+//This is identical to paintBaseTempWiFiStarted
+void paintBaseFixedWiFiConnected()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 2;
+  int textY = 20;
+  int textKerning = 8;
+  oled.setFontType(1);
+  printTextwithKerning("Xmitting", textX, textY, textKerning);
+
+  oled.setCursor(0, 38); //x, y
+  oled.setFontType(0);
+  oled.print("RTCM:");
+
+  oled.setCursor(29, 36); //x, y
+  oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
+  oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
+}
+
+//Show connecting to caster service
+//Solid WiFi icon
+void paintBaseFixedCasterStarted()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 11;
+  int textY = 18;
+  int textKerning = 8;
+
+  printTextwithKerning("Caster", textX, textY, textKerning);
+
+  textX = 3;
+  textY = 33;
+  textKerning = 6;
+  oled.setFontType(1);
+
+  printTextwithKerning("Connecting", textX, textY, textKerning);
+}
+
+//Show transmission of RTCM packets to caster service
+//Solid WiFi icon
+void paintBaseFixedCasterConnected()
+{
+  paintBatteryLevel(); //Top right corner
+
+  paintWirelessIcon(); //Top left corner
+
+  paintBaseState(); //Top center
+
+  int textX = 4;
+  int textY = 20;
+  int textKerning = 8;
+  oled.setFontType(1);
+  printTextwithKerning("Casting", textX, textY, textKerning);
+
+  oled.setCursor(0, 38); //x, y
+  oled.setFontType(0);
+  oled.print("RTCM:");
+
+  oled.setCursor(29, 36); //x, y
+  oled.setFontType(1); //Set font to type 1: 8x16
+
+  //Check for too many digits
+  if (rtcmPacketsSent > 9999) rtcmPacketsSent = 1;
+
   oled.print(rtcmPacketsSent); //rtcmPacketsSent is controlled in processRTCM()
 }
 
 //Show error, 15 minutes elapsed without sufficient environment
-void paintBaseFailed()
+//void paintBaseFailed()
+//{
+//  oled.setFontType(0);
+//  oled.setCursor(0, 22); //x, y
+//  oled.print("Base Fail Please    Reset");
+//}
+
+void displayBaseStart()
 {
-  oled.setFontType(0);
-  oled.setCursor(0, 22); //x, y
-  oled.print("Base Fail Please    Reset");
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 18;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Base", textX, textY, textKerning);
+
+  oled.display();
+}
+
+void displayBaseSuccess()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 18;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Base", textX, textY, textKerning);
+
+  textX = 5;
+  textY = 25;
+  textKerning = 8;
+  oled.setFontType(1);
+
+  printTextwithKerning("Started", textX, textY, textKerning);
+  oled.display();
+}
+
+void displayBaseFail()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 18;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Base", textX, textY, textKerning);
+
+  textX = 10;
+  textY = 25;
+  textKerning = 8;
+  oled.setFontType(1);
+
+  printTextwithKerning("Failed", textX, textY, textKerning);
+  oled.display();
+}
+
+void displayRoverStart()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 14;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Rover", textX, textY, textKerning);
+
+  oled.display();
+}
+
+void displayRoverSuccess()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 14;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Rover", textX, textY, textKerning);
+
+  textX = 5;
+  textY = 25;
+  textKerning = 8;
+  oled.setFontType(1);
+
+  printTextwithKerning("Started", textX, textY, textKerning);
+  oled.display();
+}
+
+void displayRoverFail()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 14;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Rover", textX, textY, textKerning);
+
+  textX = 10;
+  textY = 25;
+  textKerning = 8;
+  oled.setFontType(1);
+
+  printTextwithKerning("Failed", textX, textY, textKerning);
+  oled.display();
 }

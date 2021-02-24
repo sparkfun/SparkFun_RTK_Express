@@ -1,15 +1,24 @@
-//The display can enter a variety of screens
-enum DisplayScreen
+//System can enter a variety of states starting at Rover_No_Fix at power on
+typedef enum
 {
-  SCREEN_ROVER = 0,
-  SCREEN_ROVER_RTCM, //RTCM packets received (RTK float/fix)
-  SCREEN_BASE_SURVEYING_NOTSTARTED, //Wait for min accuracy before starting SVIN
-  SCREEN_BASE_SURVEYING_STARTED, //Display mean and elapsed time
-  SCREEN_BASE_TRANSMITTING, //Display RTCM packets transmitted
-  SCREEN_BASE_FAILED, //Display error
-  SCREEN_BASE_FIXED_TRANSMITTING, //Fixed coordinates, Display RTCM packets transmitted
-};
-volatile byte currentScreen = SCREEN_ROVER;
+  STATE_ROVER_NO_FIX = 0,
+  STATE_ROVER_FIX,
+  STATE_ROVER_RTK_FLOAT,
+  STATE_ROVER_RTK_FIX,
+  STATE_BASE_TEMP_SURVEY_NOT_STARTED, //User has indicated base, but current pos accuracy is too low
+  STATE_BASE_TEMP_SURVEY_STARTED,
+  STATE_BASE_TEMP_TRANSMITTING,
+  STATE_BASE_TEMP_WIFI_STARTED,
+  STATE_BASE_TEMP_WIFI_CONNECTED,
+  STATE_BASE_TEMP_CASTER_STARTED,
+  STATE_BASE_TEMP_CASTER_CONNECTED,
+  STATE_BASE_FIXED_TRANSMITTING,
+  STATE_BASE_FIXED_WIFI_STARTED,
+  STATE_BASE_FIXED_WIFI_CONNECTED,
+  STATE_BASE_FIXED_CASTER_STARTED,
+  STATE_BASE_FIXED_CASTER_CONNECTED,
+} SystemState;
+volatile SystemState systemState = STATE_ROVER_NO_FIX;
 
 //User can enter fixed base coordinates in ECEF or degrees
 typedef enum
@@ -28,19 +37,6 @@ enum RadioState
   WIFI_CONNECTED,
 };
 volatile byte radioState = RADIO_OFF;
-
-//Base status goes from Rover-Mode (LED off), surveying in (blinking), to survey is complete/trasmitting RTCM (solid)
-typedef enum
-{
-  BASE_OFF = 0,
-  BASE_SURVEYING_IN_NOTSTARTED, //User has indicated base, but current pos accuracy is too low
-  BASE_SURVEYING_IN_SLOW,
-  BASE_SURVEYING_IN_FAST,
-  BASE_TRANSMITTING,
-} BaseState;
-volatile BaseState baseState = BASE_OFF;
-unsigned long baseStateBlinkTime = 0;
-const unsigned long maxSurveyInWait_s = 60L * 15L; //Re-start survey-in after X seconds
 
 //Return values for getByteChoice()
 enum returnStatus {
