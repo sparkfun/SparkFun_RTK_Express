@@ -869,3 +869,26 @@ void displayRoverFail()
   printTextwithKerning("Failed", textX, textY, textKerning);
   oled.display();
 }
+
+//When user enter serial config menu the display will freeze so show splash while config happens
+void displaySerialConfig()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 10;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Serial", textX, textY, textKerning);
+
+  textX = 10;
+  textY = 25;
+  textKerning = 8;
+  oled.setFontType(1);
+
+  printTextwithKerning("Config", textX, textY, textKerning);
+  oled.display();
+}

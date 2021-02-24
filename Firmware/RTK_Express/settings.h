@@ -82,6 +82,7 @@ struct struct_settings {
   char mountPointPW[50] = "WR5wRo4H";
   char wifiSSID[50] = "TRex";
   char wifiPW[50] = "parachutes";  
+  float surveyInStartingAccuracy = 1.0; //Wait for 1m horizontal positional accuracy before starting survey in
 } settings;
 
 //These are the devices on board RTK Express that may be on or offline.

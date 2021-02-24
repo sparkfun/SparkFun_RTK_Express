@@ -60,11 +60,9 @@ void updateSystemState()
           float f_accuracy = accuracy;
           f_accuracy = f_accuracy / 10000.0; // Convert the horizontal accuracy (mm * 10^-1) to a float
 
-          Serial.print(F("Waiting for Horz Accuracy < 5 meters: "));
-          Serial.print(f_accuracy, 2); // Print the accuracy with 2 decimal places
-          Serial.println();
+          Serial.printf("Waiting for Horz Accuracy < %0.2f meters: %0.2f\n", settings.surveyInStartingAccuracy, f_accuracy);
 
-          if (f_accuracy > 0.0 && f_accuracy < 5.0)
+          if (f_accuracy > 0.0 && f_accuracy < settings.surveyInStartingAccuracy)
           {
             if (surveyIn() == true) //Begin survey
               systemState = STATE_BASE_TEMP_SURVEY_STARTED;

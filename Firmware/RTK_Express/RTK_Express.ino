@@ -1,5 +1,5 @@
 /*
-  September 1st, 2020
+  February 20th, 2021
   SparkFun Electronics
   Nathan Seidle
 
@@ -19,8 +19,9 @@
   ESP32's emulated EEPROM.
 
   The main loop handles lower priority updates such as:
-    Fuel gauge checking and power LED color update
-    Setup switch monitoring (module configure between Rover and Base)
+    Fuel gauge checking
+    Display update
+    System state machine update
     Text menu interactions
 
   Main Menu (Display MAC address / broadcast name):
@@ -33,11 +34,9 @@
     Enable various debug outputs sent over BT
 
   Allow user to set horz acc required before start of survey in. Default to 1m
-  Check if any globals are not used
   Make sure all states have a clean enter/exit method. Ex: if WiFi goes out, attempt reconnect
   How should we prevent state change lock. For example, if caster responds with bad news, how do we prevent constant pinging between STATE_BASE_TEMP_WIFI_CONNECTED and STATE_BASE_TEMP_CASTER_STARTED?
   Fix really slow update of screen during survey in
-  Add 'Terminal Config' splash when serial configuring
 
 */
 
@@ -187,16 +186,12 @@ char deviceName[20]; //The serial string that is broadcast. Ex: 'Express Base-BC
 const byte menuTimeout = 15; //Menus will exit/timeout after this number of seconds
 bool inTestMode = false; //Used to re-route BT traffic while in test sub menu
 long systemTime_minutes = 0; //Used to test if logging is less than max minutes
-//bool setupButtonRecorded = false; //Records state change as user presses setup button
 uint32_t powerPressedStartTime = 0; //Times how long user has been holding power button, used for power down
 uint8_t debounceDelay = 20; //ms to delay between button reads
 
-//uint32_t lastRoverUpdate = 0;
-//uint32_t lastBaseUpdate = 0;
 uint32_t lastBattUpdate = 0; //Allows us to check peripherals at different rates (ie 0.5Hz, 4Hz, etc)
 uint32_t lastDisplayUpdate = 0;
 uint32_t lastSystemStateUpdate = 0;
-//uint32_t lastTime = 0;
 
 uint32_t lastSatelliteDishIconUpdate = 0;
 bool satelliteDishIconDisplayed = false; //Toggles as lastSatelliteDishIconUpdate goes above 1000ms

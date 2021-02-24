@@ -101,6 +101,7 @@ void recordSystemSettingsToFile()
     settingsFile.println("mountPointPW=" + (String)settings.mountPointPW);
     settingsFile.println("wifiSSID=" + (String)settings.wifiSSID);
     settingsFile.println("wifiPW=" + (String)settings.wifiPW);
+    settingsFile.println("surveyInStartingAccuracy=" + (String)settings.surveyInStartingAccuracy);
 
     updateDataFileAccess(&settingsFile); // Update the file access time & date
 
@@ -305,6 +306,8 @@ bool parseLine(char* str) {
     strcpy(settings.wifiSSID, settingValue);
   else if (strcmp(settingName, "wifiPW") == 0)
     strcpy(settings.wifiPW, settingValue);
+  else if (strcmp(settingName, "surveyInStartingAccuracy") == 0)
+    settings.surveyInStartingAccuracy = d;
 
   else
     Serial.printf("Unknown setting %s on line: %s\r\n", settingName, str);

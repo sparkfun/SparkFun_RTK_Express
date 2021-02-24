@@ -47,30 +47,34 @@ void menuBase()
       Serial.print(F("3) Set required Mean 3D Standard Deviation: "));
       Serial.print(settings.observationPositionAccuracy, 3);
       Serial.println(F(" meters"));
+
+      Serial.print(F("4) Set minimum horizontal positional accuracy before starting Survey-In: "));
+      Serial.print(settings.surveyInStartingAccuracy, 2);
+      Serial.println(F(" meters"));
     }
 
-    Serial.print(F("4) Toggle NTRIP Server: "));
+    Serial.print(F("5) Toggle NTRIP Server: "));
     if (settings.enableNtripServer == true) Serial.println(F("Enabled"));
     else Serial.println(F("Disabled"));
 
     if (settings.enableNtripServer == true)
     {
-      Serial.print(F("5) Set WiFi SSID: "));
+      Serial.print(F("6) Set WiFi SSID: "));
       Serial.println(settings.wifiSSID);
 
-      Serial.print(F("6) Set WiFi PW: "));
+      Serial.print(F("7) Set WiFi PW: "));
       Serial.println(settings.wifiPW);
 
-      Serial.print(F("7) Set Caster Address: "));
+      Serial.print(F("8) Set Caster Address: "));
       Serial.println(settings.casterHost);
 
-      Serial.print(F("8) Set Caster Port: "));
+      Serial.print(F("9) Set Caster Port: "));
       Serial.println(settings.casterPort);
 
-      Serial.print(F("9) Set Mountpoint: "));
+      Serial.print(F("10) Set Mountpoint: "));
       Serial.println(settings.mountPoint);
 
-      Serial.print(F("10) Set Mountpoint PW: "));
+      Serial.print(F("11) Set Mountpoint PW: "));
       Serial.println(settings.mountPointPW);
     }
 
@@ -165,26 +169,39 @@ void menuBase()
         settings.observationPositionAccuracy = observationPositionAccuracy; //Recorded to NVM and file at main menu exit
       }
     }
-    else if (incoming == 4)
+    else if (settings.fixedBase == false && incoming == 4)
+    {
+      Serial.print(F("Enter the number of meters for horizontal positional accuracy before survey-in begins (1.0 to 5.0m): "));
+      float surveyInStartingAccuracy = getDouble(menuTimeout); //Timeout after x seconds
+      if (surveyInStartingAccuracy < 1.0 || surveyInStartingAccuracy > 5.0) //Arbitrary 1m minimum
+      {
+        Serial.println(F("Error: Survey-In Starting Accuracy out of range"));
+      }
+      else
+      {
+        settings.surveyInStartingAccuracy = surveyInStartingAccuracy; //Recorded to NVM and file at main menu exit
+      }
+    }
+    else if (incoming == 5)
     {
       settings.enableNtripServer ^= 1;
     }
-    else if (incoming == 5 && settings.enableNtripServer == true)
+    else if (incoming == 6 && settings.enableNtripServer == true)
     {
       Serial.print(F("Enter local WiFi SSID: "));
       readLine(settings.wifiSSID, sizeof(settings.wifiSSID), menuTimeout);
     }
-    else if (incoming == 6 && settings.enableNtripServer == true)
+    else if (incoming == 7 && settings.enableNtripServer == true)
     {
       Serial.printf("Enter password for WiFi network %s: ", settings.wifiSSID);
       readLine(settings.wifiPW, sizeof(settings.wifiPW), menuTimeout);
     }
-    else if (incoming == 7 && settings.enableNtripServer == true)
+    else if (incoming == 8 && settings.enableNtripServer == true)
     {
       Serial.print(F("Enter new Caster Address: "));
       readLine(settings.casterHost, sizeof(settings.casterHost), menuTimeout);
     }
-    else if (incoming == 8 && settings.enableNtripServer == true)
+    else if (incoming == 9 && settings.enableNtripServer == true)
     {
       Serial.print(F("Enter new Caster Port: "));
 
@@ -194,12 +211,12 @@ void menuBase()
       else
         settings.casterPort = casterPort; //Recorded to NVM and file at main menu exit
     }
-    else if (incoming == 9 && settings.enableNtripServer == true)
+    else if (incoming == 10 && settings.enableNtripServer == true)
     {
       Serial.print(F("Enter new Mount Point: "));
       readLine(settings.mountPoint, sizeof(settings.mountPoint), menuTimeout);
     }
-    else if (incoming == 10 && settings.enableNtripServer == true)
+    else if (incoming == 11 && settings.enableNtripServer == true)
     {
       Serial.printf("Enter password for Mount Point %s: ", settings.mountPoint);
       readLine(settings.mountPointPW, sizeof(settings.mountPointPW), menuTimeout);
