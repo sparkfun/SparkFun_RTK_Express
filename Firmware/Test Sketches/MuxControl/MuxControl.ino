@@ -19,6 +19,9 @@ void setup()
 
   pinMode(muxA, OUTPUT);
   pinMode(muxB, OUTPUT);
+  setMux(0);
+
+  pinMode(17, INPUT); //Put serial TXpin into high impedance to avoid contention with outside TX. May not be needed. 1K inline.
 
   Serial.println("0) ZED TX out/RX in");
   Serial.println("1) PPS out/Ext Int in");
