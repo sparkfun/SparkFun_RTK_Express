@@ -1532,7 +1532,9 @@ The connector has contacts on both top and bottom.</text>
 <wire x1="53.34" y1="114.3" x2="63.5" y2="114.3" width="0.2032" layer="94"/>
 <wire x1="63.5" y1="114.3" x2="60.96" y2="111.76" width="0.2032" layer="94"/>
 <wire x1="63.5" y1="114.3" x2="60.96" y2="116.84" width="0.2032" layer="94"/>
-<text x="25.908" y="67.31" size="2.54" layer="97" rot="R270" align="center">Ribbon from membrane is 1mm trace width/spacing.
+<text x="11.43" y="68.072" size="2.54" layer="97" rot="R180" align="center">Ribbon from membrane
+is 1mm trace 
+width/spacing.
 </text>
 </plain>
 <instances>
