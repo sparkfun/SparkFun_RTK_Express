@@ -892,3 +892,41 @@ void displaySerialConfig()
   printTextwithKerning("Config", textX, textY, textKerning);
   oled.display();
 }
+
+void displaySurveyStart()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 10;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Survey", textX, textY, textKerning);
+
+  oled.display();
+}
+
+void displaySurveyStarted()
+{
+  oled.clear(PAGE);
+
+  oled.setCursor(21, 13);
+  oled.setFontType(1);
+
+  int textX = 10;
+  int textY = 10;
+  int textKerning = 8;
+
+  printTextwithKerning("Survey", textX, textY, textKerning);
+
+  textX = 6;
+  textY = 25;
+  textKerning = 8;
+  oled.setFontType(1);
+
+  printTextwithKerning("Started", textX, textY, textKerning);
+  oled.display();
+}

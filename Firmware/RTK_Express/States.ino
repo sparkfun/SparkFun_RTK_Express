@@ -1,7 +1,7 @@
 /*
- This is the main state machine for the device. It's big but controls each step of the system.
- See system state chart document for a visual representation of how states can change to/from.
- */
+  This is the main state machine for the device. It's big but controls each step of the system.
+  See system state chart document for a visual representation of how states can change to/from.
+*/
 
 //Given the current state, see if conditions have moved us to a new state
 //A user pressing the setup button (change between rover/base) is handled by checkSetupButton()
@@ -55,7 +55,7 @@ void updateSystemState()
       case (STATE_BASE_TEMP_SURVEY_NOT_STARTED):
         {
           //Check for <5m horz accuracy
-          uint32_t accuracy = myGNSS.getHorizontalAccuracy(250); //This call defaults to 1100ms and can cause the core to crash with WDT timeout
+          uint32_t accuracy = myGNSS.getHorizontalAccuracy();
 
           float f_accuracy = accuracy;
           f_accuracy = f_accuracy / 10000.0; // Convert the horizontal accuracy (mm * 10^-1) to a float
@@ -64,8 +64,15 @@ void updateSystemState()
 
           if (f_accuracy > 0.0 && f_accuracy < settings.surveyInStartingAccuracy)
           {
-            if (surveyIn() == true) //Begin survey
-              systemState = STATE_BASE_TEMP_SURVEY_STARTED;
+            displaySurveyStart(); //Show 'Survey'
+            if (configureUbloxModuleBase() == true)
+            {
+              if (surveyIn() == true) //Begin survey
+              {
+                displaySurveyStarted(); //Show 'Survey Started'
+                systemState = STATE_BASE_TEMP_SURVEY_STARTED;
+              }
+            }
           }
         }
         break;
@@ -88,7 +95,7 @@ void updateSystemState()
             Serial.print(myGNSS.getSIV());
             Serial.println();
 
-             if (myGNSS.getSurveyInObservationTime() > maxSurveyInWait_s)
+            if (myGNSS.getSurveyInObservationTime() > maxSurveyInWait_s)
             {
               Serial.printf("Survey-In took more than %d minutes. Returning to rover mode.\n", maxSurveyInWait_s / 60);
 
@@ -243,7 +250,7 @@ void updateSystemState()
         {
           if (caster.connected() == false)
           {
-              systemState = STATE_BASE_TEMP_WIFI_CONNECTED; //Return to 2 earlier states to try to reconnect
+            systemState = STATE_BASE_TEMP_WIFI_CONNECTED; //Return to 2 earlier states to try to reconnect
           }
         }
         break;
@@ -375,7 +382,7 @@ void updateSystemState()
         {
           if (caster.connected() == false)
           {
-              systemState = STATE_BASE_FIXED_WIFI_CONNECTED; //Return to 2 earlier states to try to reconnect
+            systemState = STATE_BASE_FIXED_WIFI_CONNECTED; //Return to 2 earlier states to try to reconnect
           }
         }
         break;

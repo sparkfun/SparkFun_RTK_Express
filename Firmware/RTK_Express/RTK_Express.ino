@@ -33,10 +33,10 @@
     (Done) Firmware upgrade menu
     Enable various debug outputs sent over BT
 
-  Allow user to set horz acc required before start of survey in. Default to 1m
   Make sure all states have a clean enter/exit method. Ex: if WiFi goes out, attempt reconnect
   How should we prevent state change lock. For example, if caster responds with bad news, how do we prevent constant pinging between STATE_BASE_TEMP_WIFI_CONNECTED and STATE_BASE_TEMP_CASTER_STARTED?
   Fix really slow update of screen during survey in
+  Add menu for MUX control
 
 */
 

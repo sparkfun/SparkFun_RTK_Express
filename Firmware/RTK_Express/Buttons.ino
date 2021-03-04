@@ -10,7 +10,7 @@ void checkSetupButton()
     if (digitalRead(setupButton) == LOW || setupByPowerButton == true)
     {
       setupByPowerButton = false;
-      
+
       if (systemState == STATE_ROVER_NO_FIX ||
           systemState == STATE_ROVER_FIX ||
           systemState == STATE_ROVER_RTK_FLOAT ||
@@ -21,12 +21,6 @@ void checkSetupButton()
         //Configure for base mode
         Serial.println(F("Base Mode"));
 
-        if (configureUbloxModuleBase() == false)
-        {
-          Serial.println(F("Base config failed!"));
-          displayBaseFail();
-          return;
-        }
 
         //Restart Bluetooth with 'Base' name
         //We start BT regardless of Ntrip Server in case user wants to transmit survey-in stats over BT
@@ -34,10 +28,18 @@ void checkSetupButton()
 
         if (settings.fixedBase == false)
         {
+          //Don't configure base if we are going to do a survey in. We need to wait for surveyInStartingAccuracy to be achieved in state machine
           systemState = STATE_BASE_TEMP_SURVEY_NOT_STARTED;
         }
         else if (settings.fixedBase == true)
         {
+          if (configureUbloxModuleBase() == false)
+          {
+            Serial.println(F("Base config failed!"));
+            displayBaseFail();
+            return;
+          }
+
           bool response = startFixedBase();
           if (response == true)
           {
@@ -53,6 +55,7 @@ void checkSetupButton()
         }
 
         displayBaseSuccess();
+        delay(500);
       }
       else if (systemState == STATE_BASE_TEMP_SURVEY_NOT_STARTED ||
                systemState == STATE_BASE_TEMP_SURVEY_STARTED ||
@@ -84,6 +87,7 @@ void checkSetupButton()
 
         systemState = STATE_ROVER_NO_FIX;
         displayRoverSuccess();
+        delay(500);
       }
     }
   }
@@ -142,7 +146,7 @@ void checkPowerButton()
       Serial.println(millis() - powerPressedStartTime);
       powerPressedStartTime = 0; //Reset var to return to normal 'on' state
 
-      setupByPowerButton = true; //Notify checkSetupButton() 
+      setupByPowerButton = true; //Notify checkSetupButton()
     }
   }
 }
