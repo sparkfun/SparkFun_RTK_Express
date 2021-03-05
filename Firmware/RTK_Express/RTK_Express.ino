@@ -260,6 +260,8 @@ void setup()
 
   pinMode(setupButton, INPUT_PULLUP);
 
+  setMuxport(settings.dataPortChannel); //Set mux to user's choice: NMEA, I2C, PPS, or DAC
+
   //myGNSS.enableDebugging(); //Enable debug messages over Serial (default)
 }
 

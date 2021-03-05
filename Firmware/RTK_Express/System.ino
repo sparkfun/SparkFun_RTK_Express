@@ -577,3 +577,33 @@ void printTextwithKerning(char *newText, uint8_t xPos, uint8_t yPos, uint8_t ker
     xPos += kerning;
   }
 }
+
+//Set the port of the 1:4 dual channel analog mux
+//This allows NMEA, I2C, PPS/Event, and ADC/DAC to be routed through data port via software select
+void setMuxport(int channelNumber)
+{
+  pinMode(muxA, OUTPUT);
+  pinMode(muxB, OUTPUT);
+  
+  if (channelNumber > 3) return; //Error check
+
+  switch (channelNumber)
+  {
+    case 0:
+      digitalWrite(muxA, LOW);
+      digitalWrite(muxB, LOW);
+      break;
+    case 1:
+      digitalWrite(muxA, HIGH);
+      digitalWrite(muxB, LOW);
+      break;
+    case 2:
+      digitalWrite(muxA, LOW);
+      digitalWrite(muxB, HIGH);
+      break;
+    case 3:
+      digitalWrite(muxA, HIGH);
+      digitalWrite(muxB, HIGH);
+      break;
+  }
+}

@@ -87,7 +87,7 @@ void scanner()
   }
 }
 
-void setMux(int channelNumber)
+void setMuxport(int channelNumber)
 {
   if (channelNumber > 3) return; //Error check
 

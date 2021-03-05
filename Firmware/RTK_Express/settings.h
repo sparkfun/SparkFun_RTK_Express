@@ -21,11 +21,20 @@ typedef enum
 volatile SystemState systemState = STATE_ROVER_NO_FIX;
 
 //User can enter fixed base coordinates in ECEF or degrees
-typedef enum
+typedef enum coordinateType_e
 {
   COORD_TYPE_ECEF = 0,
   COORD_TYPE_GEOGRAPHIC,
 } coordinateType_e;
+
+//Data port mux can enter one of four different connections
+typedef enum muxConnectionType_e
+{
+  MUX_UBLOX_NMEA = 0,
+  MUX_PPS_EVENTTRIGGER,
+  MUX_I2C,
+  MUX_ADC_DAC,
+} muxConnectionType_e;
 
 //Radio status LED goes from off (LED off), no connection (blinking), to connected (solid)
 enum RadioState
@@ -74,7 +83,7 @@ struct struct_settings {
   bool outputSentenceGSV = true;
   bool outputSentenceRMC = true;
   bool outputSentenceGST = true;
-  bool enableSBAS = false; //Bug in ZED-F9P v1.13 firmware causes RTK LED to not light when RTK Floating with SBAS on.
+  bool enableSBAS = true; //Bug in ZED-F9P v1.13 firmware causes RTK LED to not light when RTK Floating with SBAS on but Express has no LED.
   bool enableNtripServer = false;
   char casterHost[50] = "rtk2go.com"; //It's free...
   uint16_t casterPort = 2101;
@@ -83,6 +92,7 @@ struct struct_settings {
   char wifiSSID[50] = "TRex";
   char wifiPW[50] = "parachutes";  
   float surveyInStartingAccuracy = 1.0; //Wait for 1m horizontal positional accuracy before starting survey in
+  muxConnectionType_e dataPortChannel = MUX_UBLOX_NMEA; //Mux default to ublox UART1
 } settings;
 
 //These are the devices on board RTK Express that may be on or offline.

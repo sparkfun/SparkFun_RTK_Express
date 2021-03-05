@@ -102,6 +102,7 @@ void recordSystemSettingsToFile()
     settingsFile.println("wifiSSID=" + (String)settings.wifiSSID);
     settingsFile.println("wifiPW=" + (String)settings.wifiPW);
     settingsFile.println("surveyInStartingAccuracy=" + (String)settings.surveyInStartingAccuracy);
+    settingsFile.println("dataPortChannel=" + (String)settings.dataPortChannel);
 
     updateDataFileAccess(&settingsFile); // Update the file access time & date
 
@@ -308,6 +309,8 @@ bool parseLine(char* str) {
     strcpy(settings.wifiPW, settingValue);
   else if (strcmp(settingName, "surveyInStartingAccuracy") == 0)
     settings.surveyInStartingAccuracy = d;
+  else if (strcmp(settingName, "dataPortChannel") == 0)
+    settings.dataPortChannel = (muxConnectionType_e)d;
 
   else
     Serial.printf("Unknown setting %s on line: %s\r\n", settingName, str);
