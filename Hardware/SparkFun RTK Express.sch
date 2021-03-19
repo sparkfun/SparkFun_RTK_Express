@@ -9,34 +9,34 @@
 </settings>
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
-<layer number="1" name="Top" color="4" fill="1" visible="yes" active="no"/>
-<layer number="2" name="Route2" color="1" fill="3" visible="yes" active="no"/>
-<layer number="3" name="Route3" color="4" fill="3" visible="yes" active="no"/>
-<layer number="4" name="Route4" color="1" fill="4" visible="yes" active="no"/>
-<layer number="5" name="Route5" color="4" fill="4" visible="yes" active="no"/>
-<layer number="6" name="Route6" color="1" fill="8" visible="yes" active="no"/>
-<layer number="7" name="Route7" color="4" fill="8" visible="yes" active="no"/>
-<layer number="8" name="Route8" color="1" fill="2" visible="yes" active="no"/>
-<layer number="9" name="Route9" color="4" fill="2" visible="yes" active="no"/>
-<layer number="10" name="Route10" color="1" fill="7" visible="yes" active="no"/>
-<layer number="11" name="Route11" color="4" fill="7" visible="yes" active="no"/>
-<layer number="12" name="Route12" color="1" fill="5" visible="yes" active="no"/>
-<layer number="13" name="Route13" color="4" fill="5" visible="yes" active="no"/>
-<layer number="14" name="Route14" color="1" fill="6" visible="yes" active="no"/>
-<layer number="15" name="Route15" color="4" fill="6" visible="yes" active="no"/>
-<layer number="16" name="Bottom" color="1" fill="1" visible="yes" active="no"/>
-<layer number="17" name="Pads" color="2" fill="1" visible="yes" active="no"/>
-<layer number="18" name="Vias" color="2" fill="1" visible="yes" active="no"/>
-<layer number="19" name="Unrouted" color="6" fill="1" visible="yes" active="no"/>
-<layer number="20" name="Dimension" color="24" fill="1" visible="yes" active="no"/>
-<layer number="21" name="tPlace" color="16" fill="1" visible="yes" active="no"/>
-<layer number="22" name="bPlace" color="14" fill="1" visible="yes" active="no"/>
-<layer number="23" name="tOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="no"/>
-<layer number="25" name="tNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="26" name="bNames" color="7" fill="1" visible="yes" active="no"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="no"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="no"/>
+<layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
+<layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
+<layer number="3" name="Route3" color="4" fill="3" visible="no" active="no"/>
+<layer number="4" name="Route4" color="1" fill="4" visible="no" active="no"/>
+<layer number="5" name="Route5" color="4" fill="4" visible="no" active="no"/>
+<layer number="6" name="Route6" color="1" fill="8" visible="no" active="no"/>
+<layer number="7" name="Route7" color="4" fill="8" visible="no" active="no"/>
+<layer number="8" name="Route8" color="1" fill="2" visible="no" active="no"/>
+<layer number="9" name="Route9" color="4" fill="2" visible="no" active="no"/>
+<layer number="10" name="Route10" color="1" fill="7" visible="no" active="no"/>
+<layer number="11" name="Route11" color="4" fill="7" visible="no" active="no"/>
+<layer number="12" name="Route12" color="1" fill="5" visible="no" active="no"/>
+<layer number="13" name="Route13" color="4" fill="5" visible="no" active="no"/>
+<layer number="14" name="Route14" color="1" fill="6" visible="no" active="no"/>
+<layer number="15" name="Route15" color="4" fill="6" visible="no" active="no"/>
+<layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
+<layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
+<layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
+<layer number="19" name="Unrouted" color="6" fill="1" visible="no" active="no"/>
+<layer number="20" name="Dimension" color="24" fill="1" visible="no" active="no"/>
+<layer number="21" name="tPlace" color="16" fill="1" visible="no" active="no"/>
+<layer number="22" name="bPlace" color="14" fill="1" visible="no" active="no"/>
+<layer number="23" name="tOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="24" name="bOrigins" color="15" fill="1" visible="no" active="no"/>
+<layer number="25" name="tNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="26" name="bNames" color="7" fill="1" visible="no" active="no"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="no" active="no"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="no" active="no"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="no"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="no"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="no"/>
@@ -45,8 +45,8 @@
 <layer number="34" name="bFinish" color="6" fill="6" visible="no" active="no"/>
 <layer number="35" name="tGlue" color="7" fill="4" visible="no" active="no"/>
 <layer number="36" name="bGlue" color="7" fill="5" visible="no" active="no"/>
-<layer number="37" name="tTest" color="7" fill="1" visible="yes" active="no"/>
-<layer number="38" name="bTest" color="7" fill="1" visible="yes" active="no"/>
+<layer number="37" name="tTest" color="7" fill="1" visible="no" active="no"/>
+<layer number="38" name="bTest" color="7" fill="1" visible="no" active="no"/>
 <layer number="39" name="tKeepout" color="4" fill="11" visible="no" active="no"/>
 <layer number="40" name="bKeepout" color="1" fill="11" visible="no" active="no"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="no" active="no"/>
@@ -54,19 +54,19 @@
 <layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="no"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="no"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="no"/>
-<layer number="46" name="Milling" color="3" fill="1" visible="yes" active="no"/>
-<layer number="47" name="Measures" color="7" fill="1" visible="yes" active="no"/>
-<layer number="48" name="Document" color="7" fill="1" visible="yes" active="no"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="no"/>
-<layer number="50" name="dxf" color="7" fill="1" visible="yes" active="no"/>
-<layer number="51" name="tDocu" color="6" fill="1" visible="yes" active="no"/>
-<layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="no"/>
-<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="yes" active="no"/>
-<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="yes" active="no"/>
-<layer number="56" name="wert" color="7" fill="1" visible="yes" active="no"/>
-<layer number="57" name="tCAD" color="7" fill="1" visible="yes" active="no"/>
-<layer number="59" name="tCarbon" color="7" fill="1" visible="yes" active="no"/>
-<layer number="60" name="bCarbon" color="7" fill="1" visible="yes" active="no"/>
+<layer number="46" name="Milling" color="3" fill="1" visible="no" active="no"/>
+<layer number="47" name="Measures" color="7" fill="1" visible="no" active="no"/>
+<layer number="48" name="Document" color="7" fill="1" visible="no" active="no"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="no" active="no"/>
+<layer number="50" name="dxf" color="7" fill="1" visible="no" active="no"/>
+<layer number="51" name="tDocu" color="6" fill="1" visible="no" active="no"/>
+<layer number="52" name="bDocu" color="7" fill="1" visible="no" active="no"/>
+<layer number="53" name="tGND_GNDA" color="7" fill="9" visible="no" active="no"/>
+<layer number="54" name="bGND_GNDA" color="1" fill="9" visible="no" active="no"/>
+<layer number="56" name="wert" color="7" fill="1" visible="no" active="no"/>
+<layer number="57" name="tCAD" color="7" fill="1" visible="no" active="no"/>
+<layer number="59" name="tCarbon" color="7" fill="1" visible="no" active="no"/>
+<layer number="60" name="bCarbon" color="7" fill="1" visible="no" active="no"/>
 <layer number="88" name="SimResults" color="9" fill="1" visible="yes" active="yes"/>
 <layer number="89" name="SimProbes" color="9" fill="1" visible="yes" active="yes"/>
 <layer number="90" name="Modules" color="5" fill="1" visible="no" active="no"/>
@@ -21254,6 +21254,17 @@ Commonly used for small ceramic capacitors. Like our 0.1uF (http://www.sparkfun.
 </technology>
 </technologies>
 </device>
+<device name="-0402_TIGHT-25V-5%-X7R" package="0402-TIGHT">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="PROD_ID" value="CAP-15063" constant="no"/>
+</technology>
+</technologies>
+</device>
 </devices>
 </deviceset>
 <deviceset name="10UF" prefix="C">
@@ -22816,14 +22827,17 @@ Pasted was reduced by 40% width on the center ground pad, and some amount on the
 </device>
 </devices>
 </deviceset>
-<deviceset name="ADP160" prefix="U" uservalue="yes">
-<description>Nanopower LDO&lt;br&gt;
-Iq less than 1uA for low Iload</description>
+<deviceset name="STLQ015" prefix="U">
+<description>&lt;h3&gt;STLQ015 - 150mA CMOS LDO Regulator w/ Enable&lt;/h3&gt;
+
+1.4uA quiescent
+&lt;/ul&gt;
+&lt;/p&gt;</description>
 <gates>
 <gate name="U1" symbol="V-REG-LDO_NO-BP" x="0" y="0"/>
 </gates>
 <devices>
-<device name="" package="SOT23-5">
+<device name="-3.3V" package="SOT23-5">
 <connects>
 <connect gate="U1" pin="EN" pad="3"/>
 <connect gate="U1" pin="GND" pad="2"/>
@@ -22833,8 +22847,7 @@ Iq less than 1uA for low Iload</description>
 </connects>
 <technologies>
 <technology name="">
-<attribute name="PROD_ID" value="VREG-11306"/>
-<attribute name="VALUE" value="ADP160" constant="no"/>
+<attribute name="PROD_ID" value="IC-15779"/>
 </technology>
 </technologies>
 </device>
@@ -25077,116 +25090,116 @@ ESP-WROOM-32U - U.FL antenna connector
 &lt;br&gt;
 Includes both "standard" footprints and "narrow" version (for use with tighter layouts).</description>
 <gates>
-<gate name="G$1" symbol="ESP-WROOM-32" x="0" y="0"/>
+<gate name="U1" symbol="ESP-WROOM-32" x="0" y="0"/>
 </gates>
 <devices>
 <device name="32D" package="ESP-WROOM-32D">
 <connects>
-<connect gate="G$1" pin="3V3" pad="2"/>
-<connect gate="G$1" pin="CS2/IOA15" pad="23"/>
-<connect gate="G$1" pin="CS3/IO5" pad="29"/>
-<connect gate="G$1" pin="DAC1/IOA25" pad="10"/>
-<connect gate="G$1" pin="DAC2/IOA26" pad="11"/>
-<connect gate="G$1" pin="EN" pad="3"/>
-<connect gate="G$1" pin="GND" pad="1 15 38 GND GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
-<connect gate="G$1" pin="IA34" pad="6"/>
-<connect gate="G$1" pin="IA35" pad="7"/>
-<connect gate="G$1" pin="IO16" pad="27"/>
-<connect gate="G$1" pin="IO17" pad="28"/>
-<connect gate="G$1" pin="IOA0" pad="25"/>
-<connect gate="G$1" pin="IOA2" pad="24"/>
-<connect gate="G$1" pin="IOA27" pad="12"/>
-<connect gate="G$1" pin="IOA4" pad="26"/>
-<connect gate="G$1" pin="MISO2/IOA12" pad="14"/>
-<connect gate="G$1" pin="MISO3/IO19" pad="31"/>
-<connect gate="G$1" pin="MOSI2/IOA13" pad="16"/>
-<connect gate="G$1" pin="MOSI3/IO23" pad="37"/>
-<connect gate="G$1" pin="RX-IO3" pad="34"/>
-<connect gate="G$1" pin="SCK2/IOA14" pad="13"/>
-<connect gate="G$1" pin="SCK3/IO18" pad="30"/>
-<connect gate="G$1" pin="SCL/IO22" pad="36"/>
-<connect gate="G$1" pin="SDA/IO21" pad="33"/>
-<connect gate="G$1" pin="SENSOR_VN/IA39" pad="5"/>
-<connect gate="G$1" pin="SENSOR_VP/IA36" pad="4"/>
-<connect gate="G$1" pin="TX-IO1" pad="35"/>
-<connect gate="G$1" pin="XTAL_N/IOA33" pad="9"/>
-<connect gate="G$1" pin="XTAL_P/IOA32" pad="8"/>
+<connect gate="U1" pin="3V3" pad="2"/>
+<connect gate="U1" pin="CS2/IOA15" pad="23"/>
+<connect gate="U1" pin="CS3/IO5" pad="29"/>
+<connect gate="U1" pin="DAC1/IOA25" pad="10"/>
+<connect gate="U1" pin="DAC2/IOA26" pad="11"/>
+<connect gate="U1" pin="EN" pad="3"/>
+<connect gate="U1" pin="GND" pad="1 15 38 GND GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
+<connect gate="U1" pin="IA34" pad="6"/>
+<connect gate="U1" pin="IA35" pad="7"/>
+<connect gate="U1" pin="IO16" pad="27"/>
+<connect gate="U1" pin="IO17" pad="28"/>
+<connect gate="U1" pin="IOA0" pad="25"/>
+<connect gate="U1" pin="IOA2" pad="24"/>
+<connect gate="U1" pin="IOA27" pad="12"/>
+<connect gate="U1" pin="IOA4" pad="26"/>
+<connect gate="U1" pin="MISO2/IOA12" pad="14"/>
+<connect gate="U1" pin="MISO3/IO19" pad="31"/>
+<connect gate="U1" pin="MOSI2/IOA13" pad="16"/>
+<connect gate="U1" pin="MOSI3/IO23" pad="37"/>
+<connect gate="U1" pin="RX-IO3" pad="34"/>
+<connect gate="U1" pin="SCK2/IOA14" pad="13"/>
+<connect gate="U1" pin="SCK3/IO18" pad="30"/>
+<connect gate="U1" pin="SCL/IO22" pad="36"/>
+<connect gate="U1" pin="SDA/IO21" pad="33"/>
+<connect gate="U1" pin="SENSOR_VN/IA39" pad="5"/>
+<connect gate="U1" pin="SENSOR_VP/IA36" pad="4"/>
+<connect gate="U1" pin="TX-IO1" pad="35"/>
+<connect gate="U1" pin="XTAL_N/IOA33" pad="9"/>
+<connect gate="U1" pin="XTAL_P/IOA32" pad="8"/>
 </connects>
 <technologies>
 <technology name="">
-<attribute name="PROD_ID" value="IC-13849"/>
+<attribute name="PROD_ID" value="IC-15676"/>
 </technology>
 </technologies>
 </device>
 <device name="32D-NARROW" package="ESP-WROOM-32D-NARROW">
 <connects>
-<connect gate="G$1" pin="3V3" pad="2"/>
-<connect gate="G$1" pin="CS2/IOA15" pad="23"/>
-<connect gate="G$1" pin="CS3/IO5" pad="29"/>
-<connect gate="G$1" pin="DAC1/IOA25" pad="10"/>
-<connect gate="G$1" pin="DAC2/IOA26" pad="11"/>
-<connect gate="G$1" pin="EN" pad="3"/>
-<connect gate="G$1" pin="GND" pad="1 15 38 GND1 GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
-<connect gate="G$1" pin="IA34" pad="6"/>
-<connect gate="G$1" pin="IA35" pad="7"/>
-<connect gate="G$1" pin="IO16" pad="27"/>
-<connect gate="G$1" pin="IO17" pad="28"/>
-<connect gate="G$1" pin="IOA0" pad="25"/>
-<connect gate="G$1" pin="IOA2" pad="24"/>
-<connect gate="G$1" pin="IOA27" pad="12"/>
-<connect gate="G$1" pin="IOA4" pad="26"/>
-<connect gate="G$1" pin="MISO2/IOA12" pad="14"/>
-<connect gate="G$1" pin="MISO3/IO19" pad="31"/>
-<connect gate="G$1" pin="MOSI2/IOA13" pad="16"/>
-<connect gate="G$1" pin="MOSI3/IO23" pad="37"/>
-<connect gate="G$1" pin="RX-IO3" pad="34"/>
-<connect gate="G$1" pin="SCK2/IOA14" pad="13"/>
-<connect gate="G$1" pin="SCK3/IO18" pad="30"/>
-<connect gate="G$1" pin="SCL/IO22" pad="36"/>
-<connect gate="G$1" pin="SDA/IO21" pad="33"/>
-<connect gate="G$1" pin="SENSOR_VN/IA39" pad="5"/>
-<connect gate="G$1" pin="SENSOR_VP/IA36" pad="4"/>
-<connect gate="G$1" pin="TX-IO1" pad="35"/>
-<connect gate="G$1" pin="XTAL_N/IOA33" pad="9"/>
-<connect gate="G$1" pin="XTAL_P/IOA32" pad="8"/>
+<connect gate="U1" pin="3V3" pad="2"/>
+<connect gate="U1" pin="CS2/IOA15" pad="23"/>
+<connect gate="U1" pin="CS3/IO5" pad="29"/>
+<connect gate="U1" pin="DAC1/IOA25" pad="10"/>
+<connect gate="U1" pin="DAC2/IOA26" pad="11"/>
+<connect gate="U1" pin="EN" pad="3"/>
+<connect gate="U1" pin="GND" pad="1 15 38 GND1 GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
+<connect gate="U1" pin="IA34" pad="6"/>
+<connect gate="U1" pin="IA35" pad="7"/>
+<connect gate="U1" pin="IO16" pad="27"/>
+<connect gate="U1" pin="IO17" pad="28"/>
+<connect gate="U1" pin="IOA0" pad="25"/>
+<connect gate="U1" pin="IOA2" pad="24"/>
+<connect gate="U1" pin="IOA27" pad="12"/>
+<connect gate="U1" pin="IOA4" pad="26"/>
+<connect gate="U1" pin="MISO2/IOA12" pad="14"/>
+<connect gate="U1" pin="MISO3/IO19" pad="31"/>
+<connect gate="U1" pin="MOSI2/IOA13" pad="16"/>
+<connect gate="U1" pin="MOSI3/IO23" pad="37"/>
+<connect gate="U1" pin="RX-IO3" pad="34"/>
+<connect gate="U1" pin="SCK2/IOA14" pad="13"/>
+<connect gate="U1" pin="SCK3/IO18" pad="30"/>
+<connect gate="U1" pin="SCL/IO22" pad="36"/>
+<connect gate="U1" pin="SDA/IO21" pad="33"/>
+<connect gate="U1" pin="SENSOR_VN/IA39" pad="5"/>
+<connect gate="U1" pin="SENSOR_VP/IA36" pad="4"/>
+<connect gate="U1" pin="TX-IO1" pad="35"/>
+<connect gate="U1" pin="XTAL_N/IOA33" pad="9"/>
+<connect gate="U1" pin="XTAL_P/IOA32" pad="8"/>
 </connects>
 <technologies>
 <technology name="">
-<attribute name="PROD_ID" value="IC-13849"/>
+<attribute name="PROD_ID" value="IC-15676"/>
 </technology>
 </technologies>
 </device>
 <device name="EU-NARROW" package="ESP-WROOM-32EU-NARROW">
 <connects>
-<connect gate="G$1" pin="3V3" pad="2"/>
-<connect gate="G$1" pin="CS2/IOA15" pad="23"/>
-<connect gate="G$1" pin="CS3/IO5" pad="29"/>
-<connect gate="G$1" pin="DAC1/IOA25" pad="10"/>
-<connect gate="G$1" pin="DAC2/IOA26" pad="11"/>
-<connect gate="G$1" pin="EN" pad="3"/>
-<connect gate="G$1" pin="GND" pad="1 15 38 GND GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
-<connect gate="G$1" pin="IA34" pad="6"/>
-<connect gate="G$1" pin="IA35" pad="7"/>
-<connect gate="G$1" pin="IO16" pad="27"/>
-<connect gate="G$1" pin="IO17" pad="28"/>
-<connect gate="G$1" pin="IOA0" pad="25"/>
-<connect gate="G$1" pin="IOA2" pad="24"/>
-<connect gate="G$1" pin="IOA27" pad="12"/>
-<connect gate="G$1" pin="IOA4" pad="26"/>
-<connect gate="G$1" pin="MISO2/IOA12" pad="14"/>
-<connect gate="G$1" pin="MISO3/IO19" pad="31"/>
-<connect gate="G$1" pin="MOSI2/IOA13" pad="16"/>
-<connect gate="G$1" pin="MOSI3/IO23" pad="37"/>
-<connect gate="G$1" pin="RX-IO3" pad="34"/>
-<connect gate="G$1" pin="SCK2/IOA14" pad="13"/>
-<connect gate="G$1" pin="SCK3/IO18" pad="30"/>
-<connect gate="G$1" pin="SCL/IO22" pad="36"/>
-<connect gate="G$1" pin="SDA/IO21" pad="33"/>
-<connect gate="G$1" pin="SENSOR_VN/IA39" pad="5"/>
-<connect gate="G$1" pin="SENSOR_VP/IA36" pad="4"/>
-<connect gate="G$1" pin="TX-IO1" pad="35"/>
-<connect gate="G$1" pin="XTAL_N/IOA33" pad="9"/>
-<connect gate="G$1" pin="XTAL_P/IOA32" pad="8"/>
+<connect gate="U1" pin="3V3" pad="2"/>
+<connect gate="U1" pin="CS2/IOA15" pad="23"/>
+<connect gate="U1" pin="CS3/IO5" pad="29"/>
+<connect gate="U1" pin="DAC1/IOA25" pad="10"/>
+<connect gate="U1" pin="DAC2/IOA26" pad="11"/>
+<connect gate="U1" pin="EN" pad="3"/>
+<connect gate="U1" pin="GND" pad="1 15 38 GND GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
+<connect gate="U1" pin="IA34" pad="6"/>
+<connect gate="U1" pin="IA35" pad="7"/>
+<connect gate="U1" pin="IO16" pad="27"/>
+<connect gate="U1" pin="IO17" pad="28"/>
+<connect gate="U1" pin="IOA0" pad="25"/>
+<connect gate="U1" pin="IOA2" pad="24"/>
+<connect gate="U1" pin="IOA27" pad="12"/>
+<connect gate="U1" pin="IOA4" pad="26"/>
+<connect gate="U1" pin="MISO2/IOA12" pad="14"/>
+<connect gate="U1" pin="MISO3/IO19" pad="31"/>
+<connect gate="U1" pin="MOSI2/IOA13" pad="16"/>
+<connect gate="U1" pin="MOSI3/IO23" pad="37"/>
+<connect gate="U1" pin="RX-IO3" pad="34"/>
+<connect gate="U1" pin="SCK2/IOA14" pad="13"/>
+<connect gate="U1" pin="SCK3/IO18" pad="30"/>
+<connect gate="U1" pin="SCL/IO22" pad="36"/>
+<connect gate="U1" pin="SDA/IO21" pad="33"/>
+<connect gate="U1" pin="SENSOR_VN/IA39" pad="5"/>
+<connect gate="U1" pin="SENSOR_VP/IA36" pad="4"/>
+<connect gate="U1" pin="TX-IO1" pad="35"/>
+<connect gate="U1" pin="XTAL_N/IOA33" pad="9"/>
+<connect gate="U1" pin="XTAL_P/IOA32" pad="8"/>
 </connects>
 <technologies>
 <technology name="">
@@ -25196,35 +25209,35 @@ Includes both "standard" footprints and "narrow" version (for use with tighter l
 </device>
 <device name="EU" package="ESP-WROOM-32EU">
 <connects>
-<connect gate="G$1" pin="3V3" pad="2"/>
-<connect gate="G$1" pin="CS2/IOA15" pad="23"/>
-<connect gate="G$1" pin="CS3/IO5" pad="29"/>
-<connect gate="G$1" pin="DAC1/IOA25" pad="10"/>
-<connect gate="G$1" pin="DAC2/IOA26" pad="11"/>
-<connect gate="G$1" pin="EN" pad="3"/>
-<connect gate="G$1" pin="GND" pad="1 15 38 GND GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
-<connect gate="G$1" pin="IA34" pad="6"/>
-<connect gate="G$1" pin="IA35" pad="7"/>
-<connect gate="G$1" pin="IO16" pad="27"/>
-<connect gate="G$1" pin="IO17" pad="28"/>
-<connect gate="G$1" pin="IOA0" pad="25"/>
-<connect gate="G$1" pin="IOA2" pad="24"/>
-<connect gate="G$1" pin="IOA27" pad="12"/>
-<connect gate="G$1" pin="IOA4" pad="26"/>
-<connect gate="G$1" pin="MISO2/IOA12" pad="14"/>
-<connect gate="G$1" pin="MISO3/IO19" pad="31"/>
-<connect gate="G$1" pin="MOSI2/IOA13" pad="16"/>
-<connect gate="G$1" pin="MOSI3/IO23" pad="37"/>
-<connect gate="G$1" pin="RX-IO3" pad="34"/>
-<connect gate="G$1" pin="SCK2/IOA14" pad="13"/>
-<connect gate="G$1" pin="SCK3/IO18" pad="30"/>
-<connect gate="G$1" pin="SCL/IO22" pad="36"/>
-<connect gate="G$1" pin="SDA/IO21" pad="33"/>
-<connect gate="G$1" pin="SENSOR_VN/IA39" pad="5"/>
-<connect gate="G$1" pin="SENSOR_VP/IA36" pad="4"/>
-<connect gate="G$1" pin="TX-IO1" pad="35"/>
-<connect gate="G$1" pin="XTAL_N/IOA33" pad="9"/>
-<connect gate="G$1" pin="XTAL_P/IOA32" pad="8"/>
+<connect gate="U1" pin="3V3" pad="2"/>
+<connect gate="U1" pin="CS2/IOA15" pad="23"/>
+<connect gate="U1" pin="CS3/IO5" pad="29"/>
+<connect gate="U1" pin="DAC1/IOA25" pad="10"/>
+<connect gate="U1" pin="DAC2/IOA26" pad="11"/>
+<connect gate="U1" pin="EN" pad="3"/>
+<connect gate="U1" pin="GND" pad="1 15 38 GND GNDT1 GNDT2 GNDT3 GNDT4 GNDT5 GNDT6 GNDT7 GNDT8"/>
+<connect gate="U1" pin="IA34" pad="6"/>
+<connect gate="U1" pin="IA35" pad="7"/>
+<connect gate="U1" pin="IO16" pad="27"/>
+<connect gate="U1" pin="IO17" pad="28"/>
+<connect gate="U1" pin="IOA0" pad="25"/>
+<connect gate="U1" pin="IOA2" pad="24"/>
+<connect gate="U1" pin="IOA27" pad="12"/>
+<connect gate="U1" pin="IOA4" pad="26"/>
+<connect gate="U1" pin="MISO2/IOA12" pad="14"/>
+<connect gate="U1" pin="MISO3/IO19" pad="31"/>
+<connect gate="U1" pin="MOSI2/IOA13" pad="16"/>
+<connect gate="U1" pin="MOSI3/IO23" pad="37"/>
+<connect gate="U1" pin="RX-IO3" pad="34"/>
+<connect gate="U1" pin="SCK2/IOA14" pad="13"/>
+<connect gate="U1" pin="SCK3/IO18" pad="30"/>
+<connect gate="U1" pin="SCL/IO22" pad="36"/>
+<connect gate="U1" pin="SDA/IO21" pad="33"/>
+<connect gate="U1" pin="SENSOR_VN/IA39" pad="5"/>
+<connect gate="U1" pin="SENSOR_VP/IA36" pad="4"/>
+<connect gate="U1" pin="TX-IO1" pad="35"/>
+<connect gate="U1" pin="XTAL_N/IOA33" pad="9"/>
+<connect gate="U1" pin="XTAL_P/IOA32" pad="8"/>
 </connects>
 <technologies>
 <technology name="">
@@ -26815,7 +26828,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="MEAS" library="SparkFun-Jumpers" deviceset="JUMPER-COMBO_2_NC_TRACE" device="" value=""/>
 <part name="J14" library="SparkFun-Connectors" deviceset="CONN_02" device="1X02_NO_SILK"/>
 <part name="R1" library="SparkFun-Resistors" deviceset="470OHM" device="-0603-1/10W-1%" value="470"/>
-<part name="U4" library="SparkFun-IC-Power" deviceset="ADP160" device="" value="ADP160"/>
+<part name="U4" library="SparkFun-IC-Power" deviceset="STLQ015" device="-3.3V" value="STLQ015-3.3V"/>
 <part name="C17" library="SparkFun-Capacitors" deviceset="1.0UF" device="-0603-16V-10%-X7R" value="1.0uF"/>
 <part name="C18" library="SparkFun-Capacitors" deviceset="1.0UF" device="-0603-16V-10%-X7R" value="1.0uF"/>
 <part name="SUPPLY21" library="SparkFun-PowerSymbols" deviceset="V_BATT" device=""/>
@@ -26962,7 +26975,7 @@ serial contention with Data Port</text>
 <text x="203.2" y="269.24" size="2.54" layer="94" rot="MR180" align="center">System Power</text>
 <text x="203.2" y="238.76" size="1.27" layer="97" align="center">600mA Max
 55uA Quiescent</text>
-<text x="200.66" y="193.04" size="1.27" layer="97" align="center">860nA Quiescent</text>
+<text x="200.66" y="193.04" size="1.27" layer="97" align="center">150mA max/1uA Quiescent</text>
 <text x="200.66" y="190.5" size="1.27" layer="97" align="center">Maintains GNSS data/almanac</text>
 <text x="86.36" y="185.42" size="1.27" layer="97" align="center">80uA Quiescent</text>
 <text x="452.12" y="91.44" size="1.27" layer="91">(Done) Add fast off</text>
@@ -27308,8 +27321,8 @@ The connector has contacts on both top and bottom.</text>
 <attribute name="VALUE" x="504.698" y="160.274" size="1.778" layer="96" font="vector" rot="R180" align="top-center"/>
 </instance>
 <instance part="U4" gate="U1" x="203.2" y="208.28" smashed="yes">
-<attribute name="NAME" x="195.58" y="216.408" size="1.778" layer="95" font="vector"/>
-<attribute name="VALUE" x="195.58" y="200.152" size="1.778" layer="96" font="vector" align="top-left"/>
+<attribute name="NAME" x="195.58" y="216.154" size="1.778" layer="95" font="vector"/>
+<attribute name="VALUE" x="195.58" y="200.406" size="1.778" layer="96" font="vector" align="top-left"/>
 </instance>
 <instance part="C17" gate="G$1" x="182.88" y="205.74" smashed="yes">
 <attribute name="NAME" x="184.404" y="208.661" size="1.778" layer="95" font="vector"/>
@@ -27476,7 +27489,7 @@ The connector has contacts on both top and bottom.</text>
 <instance part="GND4" gate="1" x="297.18" y="25.4" smashed="yes">
 <attribute name="VALUE" x="297.18" y="25.146" size="1.778" layer="96" align="top-center"/>
 </instance>
-<instance part="U5" gate="G$1" x="182.88" y="55.88" smashed="yes">
+<instance part="U5" gate="U1" x="182.88" y="55.88" smashed="yes">
 <attribute name="NAME" x="165.1" y="94.234" size="1.778" layer="95"/>
 <attribute name="VALUE" x="165.1" y="20.066" size="1.778" layer="96" align="top-left"/>
 </instance>
@@ -27610,7 +27623,7 @@ The connector has contacts on both top and bottom.</text>
 <wire x1="162.56" y1="91.44" x2="160.02" y2="91.44" width="0.1524" layer="91"/>
 <pinref part="SUPPLY19" gate="G$1" pin="3.3V"/>
 <wire x1="160.02" y1="91.44" x2="160.02" y2="93.98" width="0.1524" layer="91"/>
-<pinref part="U5" gate="G$1" pin="3V3"/>
+<pinref part="U5" gate="U1" pin="3V3"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -27724,7 +27737,7 @@ The connector has contacts on both top and bottom.</text>
 <pinref part="GND15" gate="1" pin="GND"/>
 <wire x1="162.56" y1="22.86" x2="160.02" y2="22.86" width="0.1524" layer="91"/>
 <wire x1="160.02" y1="22.86" x2="160.02" y2="20.32" width="0.1524" layer="91"/>
-<pinref part="U5" gate="G$1" pin="GND"/>
+<pinref part="U5" gate="U1" pin="GND"/>
 </segment>
 <segment>
 <pinref part="C10" gate="G$1" pin="2"/>
@@ -27879,7 +27892,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="48.26" x2="203.2" y2="48.26" width="0.1524" layer="91"/>
 <label x="203.2" y="48.26" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="SCL/IO22"/>
+<pinref part="U5" gate="U1" pin="SCL/IO22"/>
 </segment>
 <segment>
 <pinref part="J17" gate="G$1" pin="4"/>
@@ -27906,7 +27919,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="50.8" x2="203.2" y2="50.8" width="0.1524" layer="91"/>
 <label x="203.2" y="50.8" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="SDA/IO21"/>
+<pinref part="U5" gate="U1" pin="SDA/IO21"/>
 </segment>
 <segment>
 <pinref part="J17" gate="G$1" pin="3"/>
@@ -28216,7 +28229,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="88.9" x2="203.2" y2="88.9" width="0.1524" layer="91"/>
 <label x="203.2" y="88.9" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="RX-IO3"/>
+<pinref part="U5" gate="U1" pin="RX-IO3"/>
 </segment>
 <segment>
 <pinref part="U6" gate="U1" pin="TXO"/>
@@ -28228,7 +28241,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="83.82" x2="203.2" y2="83.82" width="0.1524" layer="91"/>
 <label x="203.2" y="83.82" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="IOA0"/>
+<pinref part="U5" gate="U1" pin="IOA0"/>
 </segment>
 <segment>
 <wire x1="403.86" y1="175.26" x2="406.4" y2="175.26" width="0.1524" layer="91"/>
@@ -28252,7 +28265,7 @@ The connector has contacts on both top and bottom.</text>
 <pinref part="J14" gate="G$1" pin="1"/>
 <wire x1="144.78" y1="83.82" x2="147.32" y2="83.82" width="0.1524" layer="91"/>
 <wire x1="147.32" y1="83.82" x2="147.32" y2="88.9" width="0.1524" layer="91"/>
-<pinref part="U5" gate="G$1" pin="EN"/>
+<pinref part="U5" gate="U1" pin="EN"/>
 </segment>
 <segment>
 <wire x1="403.86" y1="144.78" x2="403.86" y2="142.24" width="0.1524" layer="91"/>
@@ -28265,7 +28278,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="91.44" x2="203.2" y2="91.44" width="0.1524" layer="91"/>
 <label x="203.2" y="91.44" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="TX-IO1"/>
+<pinref part="U5" gate="U1" pin="TX-IO1"/>
 </segment>
 <segment>
 <pinref part="U6" gate="U1" pin="RXI"/>
@@ -28277,14 +28290,14 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="76.2" x2="203.2" y2="76.2" width="0.1524" layer="91"/>
 <label x="203.2" y="76.2" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="MISO2/IOA12"/>
+<pinref part="U5" gate="U1" pin="MISO2/IOA12"/>
 </segment>
 </net>
 <net name="ESP_14/SETUP_BUTTON" class="0">
 <segment>
 <wire x1="200.66" y1="63.5" x2="203.2" y2="63.5" width="0.1524" layer="91"/>
 <label x="203.2" y="63.5" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="SCK2/IOA14"/>
+<pinref part="U5" gate="U1" pin="SCK2/IOA14"/>
 </segment>
 <segment>
 <pinref part="J7" gate="J1" pin="3"/>
@@ -28311,7 +28324,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="203.2" y1="43.18" x2="200.66" y2="43.18" width="0.1524" layer="91"/>
 <label x="203.2" y="43.18" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="DAC1/IOA25"/>
+<pinref part="U5" gate="U1" pin="DAC1/IOA25"/>
 </segment>
 <segment>
 <wire x1="378.46" y1="93.98" x2="368.3" y2="93.98" width="0.1524" layer="91"/>
@@ -28327,7 +28340,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="55.88" x2="203.2" y2="55.88" width="0.1524" layer="91"/>
 <label x="203.2" y="55.88" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="SCK3/IO18"/>
+<pinref part="U5" gate="U1" pin="SCK3/IO18"/>
 </segment>
 <segment>
 <wire x1="378.46" y1="83.82" x2="375.92" y2="83.82" width="0.1524" layer="91"/>
@@ -28339,14 +28352,14 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="25.4" x2="203.2" y2="25.4" width="0.1524" layer="91"/>
 <label x="203.2" y="25.4" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="SENSOR_VP/IA36"/>
+<pinref part="U5" gate="U1" pin="SENSOR_VP/IA36"/>
 </segment>
 </net>
 <net name="ESP_I39/ADC39" class="0">
 <segment>
 <wire x1="200.66" y1="22.86" x2="203.2" y2="22.86" width="0.1524" layer="91"/>
 <label x="203.2" y="22.86" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="SENSOR_VN/IA39"/>
+<pinref part="U5" gate="U1" pin="SENSOR_VN/IA39"/>
 </segment>
 </net>
 <net name="ESP32_!DTR" class="0">
@@ -28433,7 +28446,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="53.34" x2="203.2" y2="53.34" width="0.1524" layer="91"/>
 <label x="203.2" y="53.34" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="MISO3/IO19"/>
+<pinref part="U5" gate="U1" pin="MISO3/IO19"/>
 </segment>
 <segment>
 <wire x1="378.46" y1="86.36" x2="375.92" y2="86.36" width="0.1524" layer="91"/>
@@ -28445,7 +28458,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="45.72" x2="203.2" y2="45.72" width="0.1524" layer="91"/>
 <label x="203.2" y="45.72" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="MOSI3/IO23"/>
+<pinref part="U5" gate="U1" pin="MOSI3/IO23"/>
 </segment>
 <segment>
 <wire x1="378.46" y1="81.28" x2="375.92" y2="81.28" width="0.1524" layer="91"/>
@@ -28457,7 +28470,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="30.48" x2="203.2" y2="30.48" width="0.1524" layer="91"/>
 <label x="203.2" y="30.48" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="IA34"/>
+<pinref part="U5" gate="U1" pin="IA34"/>
 </segment>
 <segment>
 <wire x1="121.92" y1="236.22" x2="124.46" y2="236.22" width="0.1524" layer="91"/>
@@ -28474,7 +28487,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="27.94" x2="203.2" y2="27.94" width="0.1524" layer="91"/>
 <label x="203.2" y="27.94" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="IA35"/>
+<pinref part="U5" gate="U1" pin="IA35"/>
 </segment>
 </net>
 <net name="N$4" class="1">
@@ -28505,14 +28518,14 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="33.02" x2="203.2" y2="33.02" width="0.1524" layer="91"/>
 <label x="203.2" y="33.02" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="XTAL_N/IOA33"/>
+<pinref part="U5" gate="U1" pin="XTAL_N/IOA33"/>
 </segment>
 </net>
 <net name="ESP_32" class="0">
 <segment>
 <wire x1="200.66" y1="35.56" x2="203.2" y2="35.56" width="0.1524" layer="91"/>
 <label x="203.2" y="35.56" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="XTAL_P/IOA32"/>
+<pinref part="U5" gate="U1" pin="XTAL_P/IOA32"/>
 </segment>
 </net>
 <net name="ESP_D1+" class="0">
@@ -28578,7 +28591,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="40.64" x2="203.2" y2="40.64" width="0.1524" layer="91"/>
 <label x="203.2" y="40.64" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="DAC2/IOA26"/>
+<pinref part="U5" gate="U1" pin="DAC2/IOA26"/>
 </segment>
 </net>
 <net name="ESP_I16/ZED-TXO1" class="0">
@@ -28590,7 +28603,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="60.96" x2="203.2" y2="60.96" width="0.1524" layer="91"/>
 <label x="203.2" y="60.96" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="IO16"/>
+<pinref part="U5" gate="U1" pin="IO16"/>
 </segment>
 </net>
 <net name="ESP_O17/ZED-RXI1" class="0">
@@ -28609,42 +28622,42 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <pinref part="R19" gate="G$1" pin="1"/>
 <wire x1="203.2" y1="58.42" x2="200.66" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="U5" gate="G$1" pin="IO17"/>
+<pinref part="U5" gate="U1" pin="IO17"/>
 </segment>
 </net>
 <net name="ESP_15" class="0">
 <segment>
 <wire x1="200.66" y1="73.66" x2="203.2" y2="73.66" width="0.1524" layer="91"/>
 <label x="203.2" y="73.66" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="CS2/IOA15"/>
+<pinref part="U5" gate="U1" pin="CS2/IOA15"/>
 </segment>
 </net>
 <net name="ESP_13/POWER_CTRL" class="0">
 <segment>
 <wire x1="200.66" y1="66.04" x2="203.2" y2="66.04" width="0.1524" layer="91"/>
 <label x="203.2" y="66.04" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="MOSI2/IOA13"/>
+<pinref part="U5" gate="U1" pin="MOSI2/IOA13"/>
 </segment>
 </net>
 <net name="ESP_2/MUX_A" class="0">
 <segment>
 <wire x1="200.66" y1="81.28" x2="203.2" y2="81.28" width="0.1524" layer="91"/>
 <label x="203.2" y="81.28" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="IOA2"/>
+<pinref part="U5" gate="U1" pin="IOA2"/>
 </segment>
 </net>
 <net name="ESP_4/MUX_B" class="0">
 <segment>
 <wire x1="200.66" y1="68.58" x2="203.2" y2="68.58" width="0.1524" layer="91"/>
 <label x="203.2" y="68.58" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="IOA4"/>
+<pinref part="U5" gate="U1" pin="IOA4"/>
 </segment>
 </net>
 <net name="ESP_27/FAST_OFF" class="0">
 <segment>
 <wire x1="200.66" y1="38.1" x2="203.2" y2="38.1" width="0.1524" layer="91"/>
 <label x="203.2" y="38.1" size="1.27" layer="95" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="IOA27"/>
+<pinref part="U5" gate="U1" pin="IOA27"/>
 </segment>
 </net>
 <net name="ZED_!RESET!" class="0">
@@ -28763,7 +28776,7 @@ The connector has contacts on both top and bottom.</text>
 <segment>
 <wire x1="200.66" y1="78.74" x2="203.2" y2="78.74" width="0.1524" layer="91"/>
 <label x="203.2" y="78.74" size="1.27" layer="95" rot="MR180" xref="yes"/>
-<pinref part="U5" gate="G$1" pin="CS3/IO5"/>
+<pinref part="U5" gate="U1" pin="CS3/IO5"/>
 </segment>
 </net>
 <net name="V_BKCP" class="1">
