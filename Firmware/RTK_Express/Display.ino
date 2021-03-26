@@ -169,7 +169,7 @@ void paintWirelessIcon()
         wifiIconDisplayed = true;
 
         //Draw the icon
-        oled.drawIcon(6, 2, WiFi_Symbol_Width, WiFi_Symbol_Height, WiFi_Symbol, sizeof(WiFi_Symbol), true);
+        oled.drawIcon(6, 1, WiFi_Symbol_Width, WiFi_Symbol_Height, WiFi_Symbol, sizeof(WiFi_Symbol), true);
       }
       else
         wifiIconDisplayed = false;
@@ -178,7 +178,7 @@ void paintWirelessIcon()
   else if (radioState == WIFI_CONNECTED)
   {
     //Solid WiFi icon
-    oled.drawIcon(6, 2, WiFi_Symbol_Width, WiFi_Symbol_Height, WiFi_Symbol, sizeof(WiFi_Symbol), true);
+    oled.drawIcon(6, 1, WiFi_Symbol_Width, WiFi_Symbol_Height, WiFi_Symbol, sizeof(WiFi_Symbol), true);
   }
   else
   {
@@ -275,7 +275,7 @@ void paintBaseState()
   else if (systemState == STATE_BASE_TEMP_SURVEY_NOT_STARTED)
   {
     //Turn on base icon solid (blink crosshair in paintHorzAcc)
-    oled.drawIcon(27, 0, Base_Width, Base_Height, Base, sizeof(Base), true); //true - blend with other pixels
+    oled.drawIcon(27, 0, BaseTemporary_Width, BaseTemporary_Height, BaseTemporary, sizeof(BaseTemporary), true); //true - blend with other pixels
   }
   else if (systemState == STATE_BASE_TEMP_SURVEY_STARTED)
   {
@@ -288,7 +288,7 @@ void paintBaseState()
         baseIconDisplayed = true;
 
         //Draw the icon
-        oled.drawIcon(27, 0, Base_Width, Base_Height, Base, sizeof(Base), true); //true - blend with other pixels
+        oled.drawIcon(27, 0, BaseTemporary_Width, BaseTemporary_Height, BaseTemporary, sizeof(BaseTemporary), true); //true - blend with other pixels
       }
       else
         baseIconDisplayed = false;
@@ -301,7 +301,7 @@ void paintBaseState()
            systemState == STATE_BASE_TEMP_CASTER_CONNECTED)
   {
     //Draw the icon
-    oled.drawIcon(27, 0, Base_Width, Base_Height, Base, sizeof(Base), true); //true - blend with other pixels
+    oled.drawIcon(27, 0, BaseTemporary_Width, BaseTemporary_Height, BaseTemporary, sizeof(BaseTemporary), true); //true - blend with other pixels
   }
   else if (systemState == STATE_BASE_FIXED_TRANSMITTING ||
            systemState == STATE_BASE_FIXED_WIFI_STARTED ||
