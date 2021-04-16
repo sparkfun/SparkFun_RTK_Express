@@ -62,6 +62,8 @@ const int powerSenseAndControl = 13;
 const int setupButton = 14;
 const int microSD_CS = 25;
 const int powerFastOff = 27;
+const int pin_dac26 = 26;
+const int pin_adc39 = 39;
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 //EEPROM for storing settings
@@ -96,8 +98,7 @@ int maxTimeBeforeHangup_ms = 10000; //If we fail to get a complete RTCM frame af
 uint32_t serverBytesSent = 0; //Just a running total
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-
-#include <Wire.h> //Needed for I2C to GNSS
+#include <Wire.h> //Needed for I2C
 
 //GNSS configuration
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -149,6 +150,7 @@ float battChangeRate = 0.0;
 #include "BluetoothSerial.h"
 BluetoothSerial SerialBT;
 #include "esp_bt.h" //Core access is needed for BT stop. See customBTstop() for more info.
+#include "esp_gap_bt_api.h" //Needed for setting of pin. See issue: https://github.com/sparkfun/SparkFun_RTK_Surveyor/issues/5
 
 HardwareSerial GPS(2);
 #define RXD2 16
@@ -159,6 +161,13 @@ uint8_t rBuffer[SERIAL_SIZE_RX]; //Buffer for reading F9P
 uint8_t wBuffer[SERIAL_SIZE_RX]; //Buffer for writing to F9P
 TaskHandle_t F9PSerialReadTaskHandle = NULL; //Store handles so that we can kill them if user goes into WiFi NTRIP Server mode
 TaskHandle_t F9PSerialWriteTaskHandle = NULL; //Store handles so that we can kill them if user goes into WiFi NTRIP Server mode
+
+//Reduced stack size from 10,000 to 1,000 to make room for WiFi/NTRIP server capabilities
+//Increase stacks to 2k to allow for dual file write of NMEA/UBX using built in SD library
+const int readTaskStackSize = 2000;
+const int writeTaskStackSize = 2000;
+
+char incomingBTTest = 0; //Stores incoming text over BT when in test mode
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 //External Display
@@ -177,6 +186,12 @@ MicroOLED oled(PIN_RESET, DC_JUMPER);
 int binCount = 0;
 char binFileNames[10][50];
 const char* forceFirmwareFileName = "RTK_Express_Firmware_Force.bin"; //File that will be loaded at startup regardless of user input
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+//Accelerometer for bubble leveling
+//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#include "SparkFun_LIS2DH12.h" //Click here to get the library: http://librarymanager/All#SparkFun_LIS2DH12
+SPARKFUN_LIS2DH12 accel;
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 //Global variables
@@ -228,6 +243,7 @@ void setup()
   GPS.setTimeout(1);
 
   Wire.begin(); //Start I2C
+  Wire.setClock(400000);
 
   //Start EEPROM and SD for settings, and display for output
   //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -253,6 +269,8 @@ void setup()
   beginBluetooth(); //Get MAC, start radio
 
   beginGNSS(); //Connect and configure ZED-F9P
+
+  beginAccelerometer();
 
   Serial.flush(); //Complete any previous prints
 

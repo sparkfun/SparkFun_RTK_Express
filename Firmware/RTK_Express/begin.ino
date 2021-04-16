@@ -41,6 +41,22 @@ void beginSD()
   }
 }
 
+void beginAccelerometer()
+{
+  if (accel.begin() == false)
+  {
+    Serial.println("Accelerometer not detected.");
+    online.accelerometer = false;
+    return;
+  }
+
+  //The larger the avgAmount the faster we should read the sensor
+  //accel.setDataRate(LIS2DH12_ODR_100Hz); //6 measurements a second
+  accel.setDataRate(LIS2DH12_ODR_400Hz); //25 measurements a second
+
+  online.accelerometer = true;
+}
+
 void beginDisplay()
 {
   //0x3D is default on Qwiic board
@@ -99,6 +115,7 @@ void beginGNSS()
     }
   }
   Serial.println(F("GNSS configuration complete"));
+  online.gnss = true;
 }
 
 //Get MAC, start radio
@@ -142,6 +159,27 @@ bool beginBluetooth()
     radioState = RADIO_OFF;
     return (false);
   }
+
+  //Set PIN to 1234 so we can connect to older BT devices, but not require a PIN for modern device pairing
+  //See issue: https://github.com/sparkfun/SparkFun_RTK_Surveyor/issues/5
+  //https://github.com/espressif/esp-idf/issues/1541
+  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+  esp_bt_sp_param_t param_type = ESP_BT_SP_IOCAP_MODE;
+
+  esp_bt_io_cap_t iocap = ESP_BT_IO_CAP_NONE; //Requires pin 1234 on old BT dongle, No prompt on new BT dongle
+  //esp_bt_io_cap_t iocap = ESP_BT_IO_CAP_OUT; //Works but prompts for either pin (old) or 'Does this 6 pin appear on the device?' (new)
+
+  esp_bt_gap_set_security_param(param_type, &iocap, sizeof(uint8_t));
+
+  esp_bt_pin_type_t pin_type = ESP_BT_PIN_TYPE_FIXED;
+  esp_bt_pin_code_t pin_code;
+  pin_code[0] = '1';
+  pin_code[1] = '2';
+  pin_code[2] = '3';
+  pin_code[3] = '4';
+  esp_bt_gap_set_pin(pin_type, 4, pin_code);
+  //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
   SerialBT.register_callback(btCallback);
   SerialBT.setTimeout(1);
 
@@ -151,9 +189,8 @@ bool beginBluetooth()
   radioState = BT_ON_NOCONNECTION;
 
   //Start the tasks for handling incoming and outgoing BT bytes to/from ZED-F9P
-  //Reduced stack size from 10,000 to 1,000 to make room for WiFi/NTRIP server capabilities
-  if (F9PSerialReadTaskHandle == NULL) xTaskCreate(F9PSerialReadTask, "F9Read", 1000, NULL, 0, &F9PSerialReadTaskHandle);
-  if (F9PSerialWriteTaskHandle == NULL) xTaskCreate(F9PSerialWriteTask, "F9Write", 1000, NULL, 0, &F9PSerialWriteTaskHandle);
+  if (F9PSerialReadTaskHandle == NULL) xTaskCreate(F9PSerialReadTask, "F9Read", readTaskStackSize, NULL, 0, &F9PSerialReadTaskHandle);
+  if (F9PSerialWriteTaskHandle == NULL) xTaskCreate(F9PSerialWriteTask, "F9Write", writeTaskStackSize, NULL, 0, &F9PSerialWriteTaskHandle);
 
   return (true);
 }
@@ -196,4 +233,6 @@ void beginFuelGauge()
   if (lipo.getHIBRTHibThr() < 0xFF) lipo.setHIBRTHibThr((uint8_t)0xFF);
 
   Serial.println(F("MAX17048 configuration complete"));
+
+  online.battery = true;
 }

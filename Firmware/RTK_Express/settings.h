@@ -102,4 +102,7 @@ struct struct_online {
   bool dataLogging = false;
   bool serialOutput = false;
   bool eeprom = false;
+  bool battery = false;
+  bool accelerometer = false;
+  bool gnss = false;
 } online;
