@@ -67,13 +67,19 @@ void powerDown(bool displayInfo)
 {
   if (displayInfo == true)
   {
-    accelEnd();
+    //accelEnd();
+
+  accel.setInt1(true);
+  accel.setInt1Latch(true);
+    accel.setDataRate(LIS2DH12_ODR_1Hz);
+    accel.setInt1Duration(1);
+    //accel.setDataRate(LIS2DH12_ODR_10Hz); //Works
 
     displayShutdown();
     delay(2000);
   }
 
-  pinMode(accelInt, INPUT);
+  //esp_sleep_enable_ext0_wakeup(accelInt, LOW)
 
   pinMode(peripheralPower, OUTPUT);
   digitalWrite(peripheralPower, LOW);

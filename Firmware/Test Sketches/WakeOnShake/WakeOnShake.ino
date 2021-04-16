@@ -2,85 +2,18 @@
   From BMA220 5.6
   https://media.digikey.com/pdf/Data%20Sheets/Bosch/BMA220.pdf
 
-  Device is turning on every ~3s
-  22uF cap?
-  No USB connected
-  Something is pulling the power btn low:
-  * ESP16 Fast off - no, still cycling with 16 disconnected
-  * ESP13 Power Ctrl - trace cut, no we need to modify how we check power up/down
-  *   Still turning on after 18s
-  * Charge LED? Leaking back through the reverse diode D3? No.  
-  * Is VRAW voltage do something odd? Not really. 4.19V when off, 3.93V when turned back on
-  * Remove VRAW connection to battery charger IC. Nope.
-  * POWER BTN is not going low during power off. Stays at 4.1V.
-  * Is it C23? Change from 0.1 to 1.0uF. No, still turns on. Forced power down seems shorter tho.
-  * Replace c20 from 22uF to 10uF: No. Force power down is shorter, 10s, but bounce on is still 17s. (All with 1uF C23)
-  * RC time constant shows 10Mega ohm? Is D1 still in the circuit? No, it's not. So we aren't leaking back through D1.
-  * 
-  * Re-attach fast off, bounce is now 10s? Detach is 17s. Adding 1k inline is still 10s (no help).
-  * Change R22 to 100k. Bounce increases to 15s
-  * Increase fast off resistor to 10k, bounce is 17s so not mcuh help.
-  * 
-  * Ok let's back out.
-  * Re-attach charge LED:
-  * Re connect charge IC, 20s so we are doing good
-  * Accel is connected to button
-  * Re-connect ESP32 to power button line - very short bounce, 3s
-  * Adding 10k to power button line
-  * 
-  * 
-  *   Ok
-  *   Charge IC hooked up
-  *   No accel
-  *   Fast = 10k
-  *   Button ctrl = 10k
-  *   C23 = 0.1uF
-  *   No USB
-  *   No bounce
-  *   
-  *   
-  *   USB - bouncing
-  *   No USB - 1 bounce
-  *   Detach charge IC, still bounce
-  *   
-  *   No accel
-  *   No Charge IC
-  *   Does a software pullup on ctrl cause issues? Pullup bounce is 2s, nope. Disabling internal pullup same 2s bounce
-  *   C23 Return to 1.0, bounce is 2
-  *   Charge LED removed, bounce is 2
-  *   Remove fast off, bounce is 5s
-  *   Remove ctrl, bounce is 21s
-  *   ADd fast off, bounce is 13s
-  *   
-  *   No accel
-  *   No USB
-  *   IC charger
-  *   charge LED
-  *   No fast off
-  *   No ctrl
-  *   Bounce is 21s
-  *   So the GPIOs are significantly affecting bounce even with 10k inline
-  *   Increase inlines to 100k?
-  *   Eventually CTRL won't be able to detect hig/low because of divider
-  *   Fast off w/ 100k doesn't turn off
-  *   
-  *   Does bounce occur even when software is just while(1)? Is software causing bounce? Bounce still happens. 22s.
-  *   What about C22? Change to 1.0. No change. Bounce is 2s.
-  *   Is it peripheral power control related?
-  *   Ok, if we have everything hooked up, there is not bounce with a short tap.
-  *   But once we have a full power on of peripherals, power down has bounce.
-  *   We can unplug CO2 and particle. Not the issue. Still bounce.
-  *   Should we give peripheral time to power off? No still bounce.
-  *   Is it a GPIO on ESP32 with peripherals off that's draining? Set all to inputs?
-  *   Ok, so a power button check will shut down correctly. So run to end of setup doing nothing
-  *     No I2C 
-  *     Not bouncing with display coming on. Is it the Accel?
-
+ 
   My best guess was the accel was pulling its interrupt pin low causing current flow through ESP32's ACCEL_INT pin. 
   Because the accel was always on via battery, the device would be configured in various states between firmware uploads
   and cause havoc with test firmware. Pulling bat caused accel to reset to POR state (no interrupts).
   Fully disabling interrupts on accel as powerDown() seems to have fixed the issue.
 
+  188uA in sleep
+  200mA Running
+  75mA
+
+  There is ~100mA surge when pressing the power off button when accel is wired into power down circuit
+  Disable ints during run. Enable before sleep?
 
   *     
 
@@ -124,10 +57,12 @@ void setup()
 //  pinMode(peripheralPower, OUTPUT);
 //  digitalWrite(peripheralPower, LOW);
 
+  pinMode(powerSenseAndControl, INPUT_PULLUP);
+
   Wire.begin(); //Start wire so that we can config accel before power off
   //Wire.setClock(400000);
 
-  powerOnCheck(); //After serial start in case we want to print
+  //powerOnCheck(); //After serial start in case we want to print
 
   Serial.begin(115200);
   Serial.println("SparkFun Accel Example");
@@ -153,7 +88,8 @@ void setup()
   accel.setDataRate(LIS2DH12_POWER_DOWN); //Stop measurements
 
   //INT1_CFG - enable X and Y events
-  accel.setInt1(true);
+  //accel.setInt1(true);
+  accel.setInt1(false);
 
   //Set INT POLARITY to Active Low to mimic power btn pressing
   //CTRL_REG6, INT_POLARITY = 1 active low
@@ -176,7 +112,8 @@ void setup()
   accel.setInt1Duration(9);
 
   //Latch interrupt 1, CTRL_REG5, LIR_INT1
-  accel.setInt1Latch(true);
+  //accel.setInt1Latch(true);
+  accel.setInt1Latch(false); //Atempt to remove 90mA surge
 
   //Clear the interrupt
   while(accel.getInt1()) delay(10); //Reading int will clear it
@@ -184,11 +121,13 @@ void setup()
   //Go into 8bit mode
   //accel.setDataRate(LIS2DH12_ODR_1Hz); //Very slow for wake up
 
-  powerDown(true);
+  //powerDown(true);
 
   //The larger the avgAmount the faster we should read the sensor
   //accel.setDataRate(LIS2DH12_ODR_100Hz); //6 measurements a second
   accel.setDataRate(LIS2DH12_ODR_400Hz); //25 measurements a second
+
+  Serial.println("Begin bubble");
 }
 
 double averagedRoll = 0.0;
@@ -199,7 +138,6 @@ void loop()
   if (digitalRead(accelInt) == LOW)
   {
     Serial.println("Accel int pin low!");
-
   }
   
   if (accel.getInt1()) //Reading int will clear it

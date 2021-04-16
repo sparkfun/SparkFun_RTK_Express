@@ -29,6 +29,8 @@ void setup()
 
   beginDisplay(); //Check if an external Qwiic OLED is attached
 
+  while(1);
+
   if (accel.begin() == false)
   {
     Serial.println("Accelerometer not detected. Check address jumper and wiring. Freezing...");
@@ -87,10 +89,15 @@ void getAngles()
     while (accel.available() == false) delay(1);
 
     float accelX = accel.getX();
-    float accelY = accel.getY();
-    float accelZ = accel.getZ();
-    accelZ *= -1.0; //Sensor is mounted to back of PCB
+    float accelZ = accel.getY();
+    float accelY = accel.getZ();
+    accelZ *= -1.0;
+    accelX *= -1.0;
 
+ // Y -Z X = good but left/right axis wrong
+ // X -Z Y = close, one axis still bad
+ // -X -Z Y = 
+ 
     double roll = atan2(accelY , accelZ) * 57.3;
     double pitch = atan2((-accelX) , sqrt(accelY * accelY + accelZ * accelZ)) * 57.3;
 
@@ -104,16 +111,18 @@ void getAngles()
   //Avoid -0 since we're not printing the decimal portion
   if (averagedRoll < 0.5 && averagedRoll > -0.5) averagedRoll = 0;
   if (averagedPitch < 0.5 && averagedPitch > -0.5) averagedPitch = 0;
-  
-  //  Serial.print(averagedRoll, 0);
+
+  Serial.print(averagedRoll, 0);
+  Serial.print(", ");
+  Serial.print(averagedPitch, 0);
+  Serial.print(", ");
+
+  //  Serial.print(accelX, 1);
   //  Serial.print(", ");
-  //  Serial.print(averagedPitch, 0);
+  //  Serial.print(accelY, 1);
+  //  Serial.print(", ");
+  //  Serial.print(accelZ, 1);
   //  Serial.print(", ");
 
-  //    Serial.print(accelX, 1);
-  //    Serial.print(", ");
-  //    Serial.print(accelY, 1);
-  //    Serial.print(", ");
-  //    Serial.print(accelZ, 1);
-  //    Serial.print(", ");
+  Serial.println();
 }

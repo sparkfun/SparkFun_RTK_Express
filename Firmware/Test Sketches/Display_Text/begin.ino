@@ -9,23 +9,24 @@ void beginDisplay()
     oled.begin();     // Initialize the OLED
     oled.clear(PAGE); // Clear the display's internal memory
 
-    oled.setCursor(10, 2); //x, y
+    oled.setCursor(15, 3); //x, y
     oled.setFontType(0); //Set font to smallest
-    oled.print(F("SparkFun"));
+    oled.print(F("Window"));
 
-    oled.setCursor(21, 13);
-    oled.setFontType(1);
-    oled.print(F("RTK"));
-
-    int textX = 3;
+    int textX = 12;
     int textY = 25;
     int textKerning = 9;
     oled.setFontType(1);
-    printTextwithKerning("Express", textX, textY, textKerning);
+    printTextwithKerning("Check", textX, textY, textKerning);
 
-    oled.setCursor(20, 41);
-    oled.setFontType(0); //Set font to smallest
-    oled.printf("v%d.%d", FIRMWARE_VERSION_MAJOR, FIRMWARE_VERSION_MINOR);
+  int xMax = 63;
+  int yMax = 47;
+
+  oled.line(0, 0, xMax, 0); //Top
+  oled.line(0, 0, 0, yMax); //Left
+  oled.line(0, yMax, xMax, yMax); //Bottom
+  oled.line(xMax, 0, xMax, yMax); //Right
+    
     oled.display();
   }
 }
@@ -68,17 +69,15 @@ void displayShutdown()
 
 void displayError(char * errorMessage)
 {
-    oled.clear(PAGE); // Clear the display's internal buffer
+  oled.clear(PAGE); // Clear the display's internal buffer
 
-    oled.setCursor(0, 0); //x, y
-    oled.setFontType(0); //Set font to smallest
-    oled.print(F("Error:"));
+  oled.setCursor(2, 2); //x, y
+  oled.setFontType(0); //Set font to smallest
+  oled.print(F("Error:"));
 
-    oled.setCursor(2, 10);
-    //oled.setFontType(1);
-    oled.print(errorMessage);
+  oled.setCursor(2, 10);
+  //oled.setFontType(1);
+  oled.print(errorMessage);
 
-    oled.display(); //Push internal buffer to display
-
-    while(1) delay(10); //Hard freeze
+  oled.display(); //Push internal buffer to display
 }

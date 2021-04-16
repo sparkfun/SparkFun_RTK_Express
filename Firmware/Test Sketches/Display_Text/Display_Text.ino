@@ -1,5 +1,5 @@
 /*
-  
+
 */
 const int FIRMWARE_VERSION_MAJOR = 1;
 const int FIRMWARE_VERSION_MINOR = 0;
@@ -36,12 +36,8 @@ void setup()
   Wire.setClock(400000);
 
   beginDisplay();
-  delay(500);
-  displayError("GNSS Config Fail");
-  while(1) delay(10);
 
-  displayShutdown();
-  delay(1000);
+  while (1) delay(10);
 }
 
 void loop()

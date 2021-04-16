@@ -7,19 +7,26 @@
   3: ESP26 DAC out/ESP39 ADC in
 */
 
-const int muxA = 2;
-const int muxB = 4;
+//const int muxA = 2;
+//const int muxB = 4;
+
+//Facet v10
+const int muxA = 4;
+const int muxB = 5;
 
 #include <Wire.h>
 
 void setup()
 {
   Serial.begin(115200);
+  delay(250);
   Serial.println("Mux testing");
+
+      Wire.begin();
 
   pinMode(muxA, OUTPUT);
   pinMode(muxB, OUTPUT);
-  setMux(0);
+  setMuxport(0);
 
   pinMode(17, INPUT); //Put serial TXpin into high impedance to avoid contention with outside TX. May not be needed. 1K inline.
 
@@ -37,27 +44,28 @@ void loop()
 
     if (incoming == '0')
     {
-      setMux(0);
+      setMuxport(0);
       Serial.println("ZED TX out/RX in");
     }
     else if (incoming == '1')
     {
-      setMux(1);
+      setMuxport(1);
       Serial.println("PPS out/Ext Int in");
     }
     else if (incoming == '2')
     {
-      setMux(2);
+      setMuxport(2);
       Serial.println("SCL out/SDA in");
 
+      delay(10);
       while (Serial.available()) Serial.read();
-      Wire.begin();
+      Serial.println("Scanning for I2C devices");
       scanner();
 
     }
     else if (incoming == '3')
     {
-      setMux(3);
+      setMuxport(3);
       Serial.println("ESP26 DAC out/ESP39 ADC in");
     }
   }
@@ -73,6 +81,7 @@ void scanner()
     Serial.println();
     for (byte address = 1; address < 127; address++ )
     {
+      Serial.flush();
       Wire.beginTransmission(address);
       if (Wire.endTransmission() == 0)
       {
@@ -85,6 +94,8 @@ void scanner()
     Serial.println("Done");
     delay(100);
   }
+
+  Serial.println("Returning from scanner");
 }
 
 void setMuxport(int channelNumber)
