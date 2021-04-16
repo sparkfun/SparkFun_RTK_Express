@@ -6,9 +6,16 @@ void checkSetupButton()
   //Check setup button and configure module accordingly
   if (digitalRead(setupButton) == LOW || setupByPowerButton == true)
   {
-    delay(20); //Debounce
+    delay(debounceDelay); //Debounce
     if (digitalRead(setupButton) == LOW || setupByPowerButton == true)
     {
+      //Check to see if user is pressing both buttons simultaneously - show test screen
+      if (digitalRead(powerSenseAndControl) == LOW)
+      {
+        menuTest();
+        return;
+      }
+
       setupByPowerButton = false;
 
       if (systemState == STATE_ROVER_NO_FIX ||
