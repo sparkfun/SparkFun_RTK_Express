@@ -54,7 +54,9 @@ void F9PSerialWriteTask(void *e)
         }
         else
         {
-          Serial.printf("I heard: %c\n", SerialBT.read());
+          char incoming = SerialBT.read();
+          Serial.printf("I heard: %c\n", incoming);
+          incomingBTTest = incoming; //Displayed during system test
         }
       }
     }
@@ -519,41 +521,44 @@ void btCallback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param) {
 //And outputs a serial message to USB
 void checkBatteryLevels()
 {
-  if (millis() - lastBattUpdate > 1000)
+  if (online.battery == true)
   {
-    lastBattUpdate = millis();
-
-    battLevel = lipo.getSOC();
-    battVoltage = lipo.getVoltage();
-    battChangeRate = lipo.getChangeRate();
-
-    Serial.printf("Batt (%d%%): Voltage: %0.02fV", battLevel, battVoltage);
-
-    char tempStr[25];
-    if (battChangeRate > 0)
-      sprintf(tempStr, "C");
-    else
-      sprintf(tempStr, "Disc");
-    Serial.printf(" %sharging: %0.02f%%/hr ", tempStr, battChangeRate);
-
-    if (battLevel < 10)
+    if (millis() - lastBattUpdate > 1000)
     {
-      sprintf(tempStr, "RED uh oh!");
-    }
-    else if (battLevel < 50)
-    {
-      sprintf(tempStr, "Yellow ok");
-    }
-    else if (battLevel >= 50)
-    {
-      sprintf(tempStr, "Green all good");
-    }
-    else
-    {
-      sprintf(tempStr, "No batt");
-    }
+      lastBattUpdate = millis();
 
-    Serial.printf("%s\n", tempStr);
+      battLevel = lipo.getSOC();
+      battVoltage = lipo.getVoltage();
+      battChangeRate = lipo.getChangeRate();
+
+      Serial.printf("Batt (%d%%): Voltage: %0.02fV", battLevel, battVoltage);
+
+      char tempStr[25];
+      if (battChangeRate > 0)
+        sprintf(tempStr, "C");
+      else
+        sprintf(tempStr, "Disc");
+      Serial.printf(" %sharging: %0.02f%%/hr ", tempStr, battChangeRate);
+
+      if (battLevel < 10)
+      {
+        sprintf(tempStr, "RED uh oh!");
+      }
+      else if (battLevel < 50)
+      {
+        sprintf(tempStr, "Yellow ok");
+      }
+      else if (battLevel >= 50)
+      {
+        sprintf(tempStr, "Green all good");
+      }
+      else
+      {
+        sprintf(tempStr, "No batt");
+      }
+
+      Serial.printf("%s\n", tempStr);
+    }
   }
 }
 
@@ -584,7 +589,7 @@ void setMuxport(int channelNumber)
 {
   pinMode(muxA, OUTPUT);
   pinMode(muxB, OUTPUT);
-  
+
   if (channelNumber > 3) return; //Error check
 
   switch (channelNumber)
