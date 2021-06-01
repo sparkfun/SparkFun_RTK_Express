@@ -51,9 +51,9 @@ const int muxA = 2;
 const int muxB = 4;
 
 const int sdChipSelect = 25; //Primary SPI Chip Select is CS for the MicroMod Artemis Processor. Adjust for your processor if necessary.
-const int powerSenseAndControl = 13;
+const int pin_powerSenseAndControl = 13;
 const int setupButton = 14;
-const int powerFastOff = 27;
+const int pin_powerFastOff = 27;
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 //External Display
@@ -106,6 +106,9 @@ uint32_t towMsR = 0; //Global copy - Time Of Week of rising edge (ms)
 uint32_t towSubMsR = 0; //Global copy - Millisecond fraction of Time Of Week of rising edge in nanoseconds
 
 uint32_t lastDisplayUpdate = 0;
+
+uint32_t powerPressedStartTime = 0; //Times how long user has been holding power button, used for power down
+uint8_t debounceDelay = 20; //ms to delay between button reads
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 void setup()
@@ -119,8 +122,8 @@ void setup()
   setMuxport(1);
   Serial.println("Mux set to PPS out/Ext Int in");
 
-  pinMode(powerSenseAndControl, INPUT);
-  pinMode(powerFastOff, INPUT);
+  pinMode(pin_powerSenseAndControl, INPUT);
+  pinMode(pin_powerFastOff, INPUT);
 
   Wire.begin(); // Start I2C communication with the GNSS and the Qwiic Sound Trigger
 
@@ -129,8 +132,8 @@ void setup()
   if (myTrigger.begin() == false)
   {
     Serial.println(F("Sound Trigger (PCA9536) not detected. Please check wiring. Freezing..."));
-    while (1)
-      ;
+    displayMicFail();
+    while (1);
   }
 
   myTrigger.pinMode(VM1010_TRIG, INPUT);
@@ -142,6 +145,7 @@ void setup()
   if (!SD.begin(sdChipSelect))
   {
     Serial.println("Card failed, or not present. Freezing...");
+    displaySDFail();
     while (1);
   }
   Serial.println("SD card initialized.");
@@ -181,6 +185,8 @@ void loop()
   myGNSS.checkCallbacks(); // Check if any callbacks are waiting to be processed.
 
   updateDisplay();
+
+  checkButtons();
 
   if (newEventToRecord == true)
   {
@@ -340,12 +346,12 @@ void getEventFileName()
 
     byte fixType = myGNSS.getFixType();
     Serial.print(F(" Fix: "));
-    if(fixType == 0) Serial.print(F("No fix"));
-    else if(fixType == 1) Serial.print(F("Dead reckoning"));
-    else if(fixType == 2) Serial.print(F("2D"));
-    else if(fixType == 3) Serial.print(F("3D"));
-    else if(fixType == 4) Serial.print(F("GNSS + Dead reckoning"));
-    else if(fixType == 5) Serial.print(F("Time only"));
+    if (fixType == 0) Serial.print(F("No fix"));
+    else if (fixType == 1) Serial.print(F("Dead reckoning"));
+    else if (fixType == 2) Serial.print(F("2D"));
+    else if (fixType == 3) Serial.print(F("3D"));
+    else if (fixType == 4) Serial.print(F("GNSS + Dead reckoning"));
+    else if (fixType == 5) Serial.print(F("Time only"));
     Serial.println();
 
     if (fixType == 3 || fixType == 5)

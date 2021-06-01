@@ -35,12 +35,10 @@ void setup()
   Wire.begin();
   Wire.setClock(400000);
 
-  beginDisplay();
-
-  while (1) delay(10);
 }
 
 void loop()
 {
+  beginDisplay();
   delay(10);
 }

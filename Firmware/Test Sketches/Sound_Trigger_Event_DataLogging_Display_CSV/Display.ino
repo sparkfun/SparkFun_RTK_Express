@@ -105,11 +105,11 @@ void displaySplash()
   oled.begin();     // Initialize the OLED
   oled.clear(PAGE); // Clear the display's internal memory
 
-  oled.setCursor(10, 2); //x, y
+  oled.setCursor(18, 2); //x, y
   oled.setFontType(0); //Set font to smallest
   oled.print(F("Mic"));
 
-  oled.setCursor(1, 13);
+  oled.setCursor(7, 13);
   oled.setFontType(1);
   oled.print(F("Mapper"));
 
@@ -120,4 +120,62 @@ void displaySplash()
   printTextwithKerning("Express", textX, textY, textKerning);
 
   oled.display();
+}
+
+void displaySDFail()
+{
+  //Init and display splash
+  oled.begin();     // Initialize the OLED
+  oled.clear(PAGE); // Clear the display's internal memory
+
+  oled.setCursor(7, 13); //x, y
+  oled.setFontType(1);
+  oled.print(F("SD"));
+
+  oled.setCursor(7, 25); //x, y
+  oled.setFontType(1);
+  oled.print(F("Fail"));
+
+  oled.display();
+}
+
+void displayMicFail()
+{
+  //Init and display splash
+  oled.begin();     // Initialize the OLED
+  oled.clear(PAGE); // Clear the display's internal memory
+
+  oled.setCursor(7, 13); //x, y
+  oled.setFontType(1);
+  oled.print(F("Mic"));
+
+  oled.setCursor(7, 25); //x, y
+  oled.setFontType(1);
+  oled.print(F("Fail"));
+
+  oled.display();
+}
+
+void displayShutdown()
+{
+    //Show shutdown text
+    oled.clear(PAGE); // Clear the display's internal memory
+
+    oled.setCursor(21, 13);
+    oled.setFontType(1);
+
+    int textX = 2;
+    int textY = 10;
+    int textKerning = 8;
+
+    printTextwithKerning((char*)"Shutting", textX, textY, textKerning);
+
+    textX = 4;
+    textY = 25;
+    textKerning = 9;
+    oled.setFontType(1);
+
+    printTextwithKerning((char*)"Down...", textX, textY, textKerning);
+
+    oled.display();
 }

@@ -29,8 +29,6 @@ void setup()
 
   beginDisplay(); //Check if an external Qwiic OLED is attached
 
-  while(1);
-
   if (accel.begin() == false)
   {
     Serial.println("Accelerometer not detected. Check address jumper and wiring. Freezing...");
