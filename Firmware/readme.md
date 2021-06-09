@@ -1,4 +1,4 @@
-###
+SparkFun RTK Express - Firmware
+===========================================================
 
-* **RTK_Surveyor** - The main firmware for the RTK Surveyor
-* **Test Sketches** - Various sketches used in the making of the main firmware. Used internally to verify different features. Reader beware.
+The firmware that runs on RTK Express has been moved into its own repo [here](https://github.com/sparkfun/SparkFun_RTK_Firmware).
