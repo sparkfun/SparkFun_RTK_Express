@@ -1,24 +1,19 @@
-SparkFun RTK Surveyor
+SparkFun RTK Express
 ===========================================================
 
-[![SparkFun RTK Surveyor](https://cdn.sparkfun.com/assets/parts/1/6/4/0/1/17369-GPS_RTK_Surveyor_-_Enclosed-01.jpg)](https://www.sparkfun.com/products/17369)
+[![SparkFun RTK Express](https://cdn.sparkfun.com//assets/parts/1/7/2/4/1/18019-SparkFun_RTK_Express-09.jpg)](https://www.sparkfun.com/products/18019)
 
-[*SparkFun RTK Surveyor (SPX-17369)*](https://www.sparkfun.com/products/17369)
+[*SparkFun RTK Express (SPX-18019)*](https://www.sparkfun.com/products/18019)
 
-Thanks:
-
-* Special thanks to [Avinab Malla](https://github.com/avinabmalla) for the creation of [SW Maps](https://play.google.com/store/apps/details?id=np.com.softwel.swmaps&hl=en_US&gl=US) and for pointers on handling the ESP32 read/write tasks.
+The SparkFun RTK Express is an easy to use GNSS receiver for centimeter-level positioning. Perfect for surveying, logging, and all types of post processing, this preprogrammed device can also be used for autonomous driving, navigation, asset tracking and any other application where there is a clear view of the sky. The RTK Express can also be used as a base station. With the press of a button, two RTK Expresses can be used to create an RTK system capable of 14mm horizontal positional accuracy. The built-in Bluetooth® connection via an ESP32 WROOM enables the user to use the RTK Express with their choice of GIS application on a phone or tablet. The built in battery allows for over five hours of field use and is compatible with common USB battery banks.
 
 Repository Contents
 -------------------
 
-* **/Documents** - Documentation on hardware and 3D files for the enclosure
 * **/Enclosure** - gcode for enclosure milling
-* **/Firmware** - Main firmware as well as various feature unit tests
-* **/Graphics** - Bitmaps for display (not currently implmented)
+* **/Graphics** - Bitmaps for the display
 * **/Hardware** - Eagle files
-* **/Programming** - Espressif's CLI for programming binaries
-* **/Testing** - Espressif provided test suite for RF compliance testing
+* **/Overlay** - Design files for the adhesive membrane overlay
 
 Documentation
 --------------
