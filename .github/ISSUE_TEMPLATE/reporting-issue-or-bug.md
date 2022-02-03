@@ -7,4 +7,6 @@ assignees: ''
 
 ---
 
-**Note:** This repo is the hardware repo for the [RTK Express](https://github.com/sparkfun/SparkFun_RTK_Express). If you have a software feature or issue, please report it on the [RTK Firmware](https://github.com/sparkfun/SparkFun_RTK_Firmware) repo. If you have a hardware issue or question, this is the place to report it.
+Please note: This repo is the hardware repo for the RTK Express (https://www.sparkfun.com/products/18442). If you have a hardware issue or question (circuit design, battery question, overall mechanical questions), this is the place to report it.
+
+If you have a software feature or issue, please report it on the RTK Firmware (https://github.com/sparkfun/SparkFun_RTK_Firmware/issues) repo.
