@@ -45,7 +45,7 @@
 <layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
 <layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="yes"/>
 <layer number="51" name="tDocu" color="6" fill="1" visible="yes" active="yes"/>
 <layer number="52" name="bDocu" color="7" fill="1" visible="no" active="yes"/>
@@ -266,7 +266,7 @@ LEDs this side</text>
 <wire x1="27.923" y1="-0.275" x2="27.923" y2="1.084" width="0.2032" layer="20"/>
 <wire x1="27.923" y1="1.084" x2="19.223" y2="1.084" width="0.2032" layer="20"/>
 <wire x1="19.223" y1="1.084" x2="19.223" y2="-0.275" width="0.2032" layer="20"/>
-<text x="84.19" y="60.66" size="1.778" layer="51" font="vector" ratio="15">JLC7628 Impedance controlled</text>
+<text x="84.19" y="60.2" size="1.778" layer="51" font="vector" ratio="15">Controlled Impedance: JLC7628</text>
 </plain>
 <libraries>
 <library name="SparkFun-Resistors">
