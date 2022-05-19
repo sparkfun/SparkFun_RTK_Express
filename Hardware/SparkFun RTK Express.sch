@@ -31871,6 +31871,12 @@ The connector has contacts on both top and bottom.</text>
 <text x="269.24" y="78.74" size="1.27" layer="97" align="center">IO5: Has builtin pullup at POR.</text>
 <wire x1="350.52" y1="198.12" x2="350.52" y2="279.4" width="0.2032" layer="97" style="longdash"/>
 <text x="182.88" y="10.16" size="1.778" layer="97" align="center">Part#: ESP32-WROOM-32E-N16</text>
+<text x="274.32" y="114.3" size="1.778" layer="97" align="center-left">IDs:</text>
+<text x="274.32" y="111.76" size="1.778" layer="97" align="center-left">Surveyor: N/A</text>
+<text x="274.32" y="109.22" size="1.778" layer="97" align="center-left">Express: 10/3.3</text>
+<text x="274.32" y="106.68" size="1.778" layer="97" align="center-left">Express+: 3.3/10</text>
+<text x="274.32" y="104.14" size="1.778" layer="97" align="center-left">Facet: 10/10</text>
+<text x="274.32" y="101.6" size="1.778" layer="97" align="center-left">Facet LBand: 10/20</text>
 </plain>
 <instances>
 <instance part="JP21" gate="G$1" x="416.56" y="33.02" smashed="yes" rot="R270"/>
